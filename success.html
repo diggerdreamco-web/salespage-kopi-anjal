@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pembayaran Berjaya - Kopi Anjal</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .result-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--brown-900) 0%, var(--brown-700) 100%);
+      text-align: center;
+      padding: 40px 24px;
+    }
+    .result-box {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 60px 48px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+    }
+    .result-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto 24px;
+    }
+    .result-icon.success {
+      background: #e8f5e9;
+      color: #27ae60;
+    }
+    .result-box h1 {
+      font-size: 2rem;
+      color: var(--brown-900);
+      margin-bottom: 12px;
+    }
+    .result-box p {
+      color: var(--text-light);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+    .result-details {
+      background: var(--brown-50);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 28px 0;
+      text-align: left;
+    }
+    .result-details p {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    .result-details strong {
+      color: var(--brown-800);
+    }
+    @media (max-width: 768px) {
+      .result-box { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="result-page">
+    <div class="result-box">
+      <div class="result-icon success">&#10003;</div>
+      <h1>Pembayaran Berjaya!</h1>
+      <p>Terima kasih kerana membeli Kopi Anjal.</p>
+      <div class="result-details">
+        <p><strong>Apa seterusnya?</strong></p>
+        <p>1. Anda akan menerima email pengesahan dalam beberapa minit.</p>
+        <p>2. Pesanan anda akan diproses dan dihantar dalam 1-2 hari bekerja.</p>
+        <p>3. Tracking number akan dihantar melalui SMS/WhatsApp.</p>
+      </div>
+      <p>Ada soalan? Hubungi kami di WhatsApp.</p>
+      <a href="/" class="btn btn-primary" style="margin-top: 20px;">Kembali ke Laman Utama</a>
+    </div>
+  </div>
+</body>
+</html>
