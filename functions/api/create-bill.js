@@ -30,12 +30,12 @@ export async function onRequestPost(context) {
     }
 
     const packageNames = {
-      starter: 'Kopi Anjal - Starter (1 Kotak)',
-      bestvalue: 'Kopi Anjal - Best Value (3 Kotak)',
-      hardcore: 'Kopi Anjal - Full Glow (5 Kotak)',
+      starter: "Anjal'e - Starter (1 Kotak, 12 sachet)",
+      bestvalue: "Anjal'e - Best Value (3 Kotak, 36 sachet)",
+      hardcore: "Anjal'e - Full Glow (5 Kotak, 60 sachet)",
     };
 
-    const billName = packageNames[pkg] || 'Kopi Anjal';
+    const billName = packageNames[pkg] || "Anjal'e";
     const billAmount = price * 100;
     const siteUrl = env.SITE_URL || 'https://teratakniaga.com';
 
