@@ -50,9 +50,7 @@ const WA_NUMBER = '60123456789';
 checkoutForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  // Check upsell
-  const upsellChecked = document.getElementById('upsellCheck').checked;
-  const totalPrice = upsellChecked ? selectedPrice + 39 : selectedPrice;
+  const totalPrice = selectedPrice;
 
   // Get selected payment method
   const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
@@ -60,7 +58,6 @@ checkoutForm.addEventListener('submit', async (e) => {
   const formData = {
     package: selectedPackage,
     price: totalPrice,
-    upsell: upsellChecked ? "Anjal'e Matcha x1" : null,
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
     phone: document.getElementById('phone').value,
@@ -258,16 +255,6 @@ const counterObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.stat-number, .social-bar-item .number').forEach(el => {
   counterObserver.observe(el);
-});
-
-// ========== UPSELL CHECKBOX ==========
-const upsellCheck = document.getElementById('upsellCheck');
-const upsellRow = document.getElementById('upsellRow');
-
-upsellCheck.addEventListener('change', () => {
-  const total = upsellCheck.checked ? selectedPrice + 39 : selectedPrice;
-  summaryTotalEl.textContent = `RM${total}`;
-  upsellRow.style.display = upsellCheck.checked ? 'flex' : 'none';
 });
 
 // ========== COUNTDOWN TIMER ==========
