@@ -455,6 +455,33 @@
           <input type="text" id="postcode" name="postcode" placeholder="cth: 40000" required>
         </div>
 
+        <!-- PAYMENT METHOD -->
+        <div class="payment-methods">
+          <label class="section-label">Pilih Kaedah Pembayaran</label>
+          <div class="payment-options">
+            <label class="payment-option">
+              <input type="radio" name="paymentMethod" value="qr" checked>
+              <div class="payment-card">
+                <div class="payment-icon">QR</div>
+                <div class="payment-info">
+                  <strong>DuitNow QR / Bank Transfer</strong>
+                  <span>Scan QR atau transfer bank — confirm manual</span>
+                </div>
+              </div>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="paymentMethod" value="toyyibpay">
+              <div class="payment-card">
+                <div class="payment-icon">FPX</div>
+                <div class="payment-info">
+                  <strong>Online Banking / Kad Kredit</strong>
+                  <span>FPX semua bank, kad Visa/Mastercard</span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
         <!-- BUNDLE UPSELL -->
         <div class="upsell-box" id="upsellBox">
           <label class="upsell-check">
@@ -573,6 +600,52 @@
       <div class="discount-code" id="discountCode">ANJAL10</div>
       <p class="exit-sub">Kod ini sah untuk 24 jam sahaja.</p>
       <a href="#order" class="btn btn-primary btn-lg btn-full" id="exitCta">Gunakan Kod Sekarang</a>
+    </div>
+  </div>
+
+  <!-- QR PAYMENT MODAL -->
+  <div class="modal-overlay" id="qrModal">
+    <div class="modal qr-modal">
+      <button class="modal-close" id="closeQrModal">&times;</button>
+      <h2>Bayar Untuk Sahkan Order</h2>
+      <p class="qr-sub">Scan QR DuitNow atau transfer ke bank account bawah. Lepas bayar, klik butang WhatsApp untuk hantar resit.</p>
+
+      <div class="qr-box">
+        <img src="images/duitnow-qr.png" alt="DuitNow QR" class="qr-image" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="qr-fallback" style="display:none">
+          <strong>QR Code</strong>
+          <span>Upload QR anda ke images/duitnow-qr.png</span>
+        </div>
+      </div>
+
+      <div class="bank-details">
+        <div class="bank-row">
+          <span class="bank-label">Nama Bank</span>
+          <span class="bank-value">Maybank</span>
+        </div>
+        <div class="bank-row">
+          <span class="bank-label">Nama Akaun</span>
+          <span class="bank-value">TERATAK NIAGA</span>
+        </div>
+        <div class="bank-row">
+          <span class="bank-label">No. Akaun</span>
+          <span class="bank-value" id="bankAcc">5123-4567-8901</span>
+          <button class="copy-btn" data-copy="bankAcc">Salin</button>
+        </div>
+        <div class="bank-row highlight">
+          <span class="bank-label">Jumlah</span>
+          <span class="bank-value" id="qrAmount">RM0</span>
+        </div>
+        <div class="bank-row">
+          <span class="bank-label">Rujukan</span>
+          <span class="bank-value" id="qrRef">-</span>
+        </div>
+      </div>
+
+      <a href="#" id="waConfirmBtn" class="btn btn-primary btn-lg btn-full" target="_blank">
+        Saya Dah Bayar — Hantar Resit via WhatsApp
+      </a>
+      <p class="qr-note">Order anda akan disahkan dalam 1-2 jam waktu bekerja selepas resit diterima.</p>
     </div>
   </div>
 

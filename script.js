@@ -43,6 +43,9 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
+// WhatsApp number untuk order confirmation (tukar ikut no anda)
+const WA_NUMBER = '60123456789';
+
 // Form submission - checkout handler
 checkoutForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -51,10 +54,13 @@ checkoutForm.addEventListener('submit', async (e) => {
   const upsellChecked = document.getElementById('upsellCheck').checked;
   const totalPrice = upsellChecked ? selectedPrice + 39 : selectedPrice;
 
+  // Get selected payment method
+  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
   const formData = {
     package: selectedPackage,
     price: totalPrice,
-    upsell: upsellChecked ? 'Kopi Anjal Matcha x1' : null,
+    upsell: upsellChecked ? "Anjal'e Matcha x1" : null,
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
     phone: document.getElementById('phone').value,
@@ -64,33 +70,97 @@ checkoutForm.addEventListener('submit', async (e) => {
     postcode: document.getElementById('postcode').value,
   };
 
-  // ToyyibPay Payment Integration
   const payBtn = document.getElementById('payBtn');
   payBtn.textContent = 'Memproses...';
   payBtn.disabled = true;
 
   try {
-    const response = await fetch('/api/create-bill', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    });
+    if (paymentMethod === 'qr') {
+      // ===== QR / Bank Transfer Flow =====
+      const response = await fetch('/api/manual-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (result.paymentUrl) {
-      // Redirect to ToyyibPay payment page
-      window.location.href = result.paymentUrl;
+      if (result.success) {
+        showQrModal(formData, result.orderRef, result.packageName, totalPrice);
+        closeModal();
+      } else {
+        alert(result.error || 'Gagal memproses order. Sila cuba lagi.');
+      }
     } else {
-      alert(result.error || 'Gagal mencipta pembayaran. Sila cuba lagi.');
-      payBtn.textContent = 'Bayar Sekarang';
-      payBtn.disabled = false;
+      // ===== ToyyibPay Flow =====
+      const response = await fetch('/api/create-bill', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.paymentUrl) {
+        window.location.href = result.paymentUrl;
+      } else {
+        alert(result.error || 'Gagal mencipta pembayaran. Sila cuba lagi. Kalau payment gateway masih pending approval, sila pilih QR / Bank Transfer.');
+      }
     }
   } catch (err) {
     alert('Ralat sambungan. Sila semak internet anda dan cuba lagi.');
+  } finally {
     payBtn.textContent = 'Bayar Sekarang';
     payBtn.disabled = false;
   }
+});
+
+// ========== QR MODAL ==========
+const qrModal = document.getElementById('qrModal');
+const closeQrBtn = document.getElementById('closeQrModal');
+
+function showQrModal(data, orderRef, packageName, amount) {
+  document.getElementById('qrAmount').textContent = `RM${amount}`;
+  document.getElementById('qrRef').textContent = orderRef;
+
+  // Build WhatsApp message
+  const message = encodeURIComponent(
+    `Hai! Saya dah bayar untuk order Anjal'e:\n\n` +
+    `Ref: ${orderRef}\n` +
+    `Nama: ${data.name}\n` +
+    `Pakej: ${packageName}\n` +
+    `Jumlah: RM${amount}\n` +
+    `Telefon: ${data.phone}\n` +
+    `Alamat: ${data.address}, ${data.postcode} ${data.city}, ${data.state}\n\n` +
+    `Saya lampirkan resit pembayaran di bawah.`
+  );
+  document.getElementById('waConfirmBtn').href = `https://wa.me/${WA_NUMBER}?text=${message}`;
+
+  qrModal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeQrModal() {
+  qrModal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+closeQrBtn.addEventListener('click', closeQrModal);
+qrModal.addEventListener('click', (e) => {
+  if (e.target === qrModal) closeQrModal();
+});
+
+// Copy bank account button
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const targetId = btn.dataset.copy;
+    const text = document.getElementById(targetId).textContent.replace(/\s+/g, '');
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.textContent;
+      btn.textContent = 'Tersalin!';
+      setTimeout(() => { btn.textContent = original; }, 1500);
+    });
+  });
 });
 
 // ========== FAQ ACCORDION ==========

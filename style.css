@@ -1754,6 +1754,228 @@ img {
   margin-bottom: 20px;
 }
 
+/* ========== PAYMENT METHODS ========== */
+.payment-methods {
+  margin-bottom: 20px;
+}
+
+.section-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--brown-800);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.payment-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.payment-option {
+  cursor: pointer;
+  position: relative;
+}
+
+.payment-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.payment-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 2px solid var(--brown-100);
+  border-radius: 12px;
+  background: var(--white);
+  transition: all 0.2s ease;
+}
+
+.payment-option input[type="radio"]:checked + .payment-card {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, rgba(212, 163, 74, 0.08), rgba(212, 163, 74, 0.02));
+  box-shadow: 0 4px 16px rgba(212, 163, 74, 0.15);
+}
+
+.payment-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--brown-800);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.payment-option input[type="radio"]:checked + .payment-card .payment-icon {
+  background: var(--gold-dark);
+}
+
+.payment-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.payment-info strong {
+  font-size: 0.88rem;
+  color: var(--brown-800);
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.payment-info span {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  line-height: 1.3;
+}
+
+/* ========== QR PAYMENT MODAL ========== */
+.qr-modal {
+  max-width: 460px;
+}
+
+.qr-sub {
+  color: var(--text-light);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.qr-box {
+  background: var(--cream);
+  border: 2px dashed var(--brown-100);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+}
+
+.qr-image {
+  max-width: 240px;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.qr-fallback {
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-light);
+  text-align: center;
+}
+
+.qr-fallback strong {
+  font-size: 1.2rem;
+  color: var(--brown-800);
+}
+
+.qr-fallback span {
+  font-size: 0.85rem;
+}
+
+.bank-details {
+  background: var(--white);
+  border: 1px solid var(--brown-100);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.bank-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--brown-100);
+}
+
+.bank-row:last-child {
+  border-bottom: none;
+}
+
+.bank-row.highlight {
+  background: linear-gradient(135deg, rgba(212, 163, 74, 0.08), transparent);
+  margin: 8px -8px;
+  padding: 12px 8px;
+  border-radius: 8px;
+  border-bottom: none;
+}
+
+.bank-label {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.bank-value {
+  font-size: 0.95rem;
+  color: var(--brown-800);
+  font-weight: 600;
+  text-align: right;
+  word-break: break-all;
+}
+
+.bank-row.highlight .bank-value {
+  font-size: 1.3rem;
+  color: var(--gold-dark);
+  font-weight: 800;
+}
+
+.copy-btn {
+  background: var(--brown-800);
+  color: var(--white);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.copy-btn:hover {
+  background: var(--gold-dark);
+}
+
+.qr-note {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-top: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  .payment-options {
+    grid-template-columns: 1fr;
+  }
+
+  .bank-row {
+    flex-wrap: wrap;
+  }
+}
+
 .upsell-check {
   display: flex;
   align-items: center;
