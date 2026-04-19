@@ -101,7 +101,10 @@ checkoutForm.addEventListener('submit', async (e) => {
       if (result.paymentUrl) {
         window.location.href = result.paymentUrl;
       } else {
-        alert(result.error || 'Gagal mencipta pembayaran. Sila cuba lagi. Kalau payment gateway masih pending approval, sila pilih QR / Bank Transfer.');
+        // DEBUG MODE — tunjuk full error details dari ToyyibPay
+        const debugInfo = result.details ? `\n\nDetails: ${JSON.stringify(result.details)}` : '';
+        const debugMsg = result.message ? `\n\nMessage: ${result.message}` : '';
+        alert((result.error || 'Gagal mencipta pembayaran.') + debugInfo + debugMsg);
       }
     }
   } catch (err) {
