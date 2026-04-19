@@ -9,6 +9,72 @@ const summaryTotalEl = document.getElementById('summaryTotal');
 let selectedPackage = null;
 let selectedPrice = 0;
 
+// ========== VOUCHER SYSTEM ==========
+// Registry kod voucher — tambah kod baru kat sini
+const VOUCHERS = {
+  ANJAL10: { percent: 10, label: 'ANJAL10' },
+  // Contoh tambah kod lain:
+  // RAYA20: { percent: 20, label: 'RAYA20' },
+  // NEWUSER: { amount: 5, label: 'NEWUSER' },  // RM5 fixed discount
+};
+
+let appliedVoucher = null; // { code, percent?, amount?, label }
+
+function applyVoucher(code) {
+  const voucher = VOUCHERS[code];
+  if (!voucher) return false;
+  appliedVoucher = { code, ...voucher };
+
+  // Show banner kat order section
+  const banner = document.getElementById('voucherBanner');
+  if (banner) {
+    document.getElementById('voucherBannerCode').textContent = voucher.label;
+    document.getElementById('voucherBannerPct').textContent = voucher.percent || 0;
+    banner.classList.add('active');
+  }
+
+  // Refresh summary kalau modal dah ada selected package
+  if (selectedPackage) updateSummary();
+  return true;
+}
+
+function removeVoucher() {
+  appliedVoucher = null;
+  const banner = document.getElementById('voucherBanner');
+  if (banner) banner.classList.remove('active');
+  if (selectedPackage) updateSummary();
+}
+
+function calcDiscount(basePrice) {
+  if (!appliedVoucher) return 0;
+  if (appliedVoucher.percent) return Math.round(basePrice * appliedVoucher.percent / 100);
+  if (appliedVoucher.amount) return Math.min(appliedVoucher.amount, basePrice);
+  return 0;
+}
+
+function updateSummary() {
+  if (!selectedPackage) return;
+  const discount = calcDiscount(selectedPrice);
+  const finalPrice = selectedPrice - discount;
+  const discountRow = document.getElementById('discountRow');
+
+  if (discount > 0) {
+    document.getElementById('discountCodeLabel').textContent = appliedVoucher.label;
+    document.getElementById('discountAmount').textContent = `-RM${discount}`;
+    discountRow.style.display = 'flex';
+  } else {
+    discountRow.style.display = 'none';
+  }
+
+  summaryTotalEl.textContent = `RM${finalPrice}`;
+}
+
+// Remove voucher button kat banner
+document.addEventListener('DOMContentLoaded', () => {
+  const removeBtn = document.getElementById('removeVoucher');
+  if (removeBtn) removeBtn.addEventListener('click', removeVoucher);
+});
+
 // Package selection
 document.querySelectorAll('.select-package').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -21,7 +87,7 @@ document.querySelectorAll('.select-package').forEach(btn => {
 
     selectedPackageEl.textContent = `${packageName} — RM${selectedPrice}`;
     summaryPackageEl.textContent = `${packageName} (${packageDetails})`;
-    summaryTotalEl.textContent = `RM${selectedPrice}`;
+    updateSummary();
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -50,7 +116,8 @@ const WA_NUMBER = '60123456789';
 checkoutForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const totalPrice = selectedPrice;
+  const discount = calcDiscount(selectedPrice);
+  const totalPrice = selectedPrice - discount;
 
   // Get selected payment method
   const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
@@ -58,6 +125,9 @@ checkoutForm.addEventListener('submit', async (e) => {
   const formData = {
     package: selectedPackage,
     price: totalPrice,
+    originalPrice: selectedPrice,
+    voucherCode: appliedVoucher ? appliedVoucher.code : '',
+    discountAmount: discount,
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
     phone: document.getElementById('phone').value,
@@ -347,9 +417,18 @@ document.querySelectorAll('.stat-number, .social-bar-item .number').forEach(el =
   exitPopup.addEventListener('click', (e) => {
     if (e.target === exitPopup) closeExitPopup();
   });
-  exitCta.addEventListener('click', closeExitPopup);
 
-  // Copy discount code on click
+  // "Gunakan Kod Sekarang" — auto apply voucher + scroll to order
+  exitCta.addEventListener('click', (e) => {
+    e.preventDefault();
+    applyVoucher('ANJAL10');
+    closeExitPopup();
+    // Smooth scroll to order section
+    const orderSection = document.getElementById('order');
+    if (orderSection) orderSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Copy discount code on click (kalau user click kod tu je, tak apply automatic)
   document.getElementById('discountCode').addEventListener('click', function() {
     navigator.clipboard.writeText('ANJAL10').then(() => {
       this.textContent = 'TERSALIN!';

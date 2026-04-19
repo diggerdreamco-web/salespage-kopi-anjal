@@ -315,6 +315,19 @@
         <span class="live-dot"></span>
         <span id="liveCount">24</span> orang sedang tengok page ini sekarang
       </div>
+
+      <!-- VOUCHER BANNER (hidden by default, activated when user clicks "Gunakan Kod Sekarang") -->
+      <div class="voucher-banner" id="voucherBanner">
+        <div class="voucher-banner-content">
+          <span class="voucher-banner-icon">🎉</span>
+          <div>
+            <strong>Kod <span id="voucherBannerCode">ANJAL10</span> aktif</strong>
+            <span class="voucher-banner-sub">Diskaun <span id="voucherBannerPct">10</span>% akan dikira bila checkout</span>
+          </div>
+          <button type="button" class="voucher-banner-remove" id="removeVoucher" aria-label="Buang kod">&times;</button>
+        </div>
+      </div>
+
       <div class="pricing-grid stagger-children">
         <div class="price-card reveal" data-package="starter" data-price="49">
           <div class="price-badge">Cuba Dulu</div>
@@ -452,6 +465,10 @@
           <div class="summary-row">
             <span>Penghantaran:</span>
             <span class="free">PERCUMA</span>
+          </div>
+          <div class="summary-row discount-row" id="discountRow" style="display:none;">
+            <span>Diskaun (<span id="discountCodeLabel">ANJAL10</span>):</span>
+            <span class="discount-amount" id="discountAmount">-RM0</span>
           </div>
           <div class="summary-row total">
             <span>Jumlah:</span>
