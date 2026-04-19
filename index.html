@@ -430,30 +430,18 @@
           <input type="text" id="postcode" name="postcode" placeholder="cth: 40000" required>
         </div>
 
-        <!-- PAYMENT METHOD -->
+        <!-- PAYMENT METHOD (FPX/Card only — QR temporarily disabled) -->
+        <input type="hidden" name="paymentMethod" value="toyyibpay">
         <div class="payment-methods">
-          <label class="section-label">Pilih Kaedah Pembayaran</label>
-          <div class="payment-options">
-            <label class="payment-option">
-              <input type="radio" name="paymentMethod" value="qr" checked>
-              <div class="payment-card">
-                <div class="payment-icon">QR</div>
-                <div class="payment-info">
-                  <strong>DuitNow QR / Bank Transfer</strong>
-                  <span>Scan QR atau transfer bank — confirm manual</span>
-                </div>
+          <label class="section-label">Kaedah Pembayaran</label>
+          <div class="payment-single">
+            <div class="payment-card payment-card-active">
+              <div class="payment-icon">FPX</div>
+              <div class="payment-info">
+                <strong>Online Banking / Kad Kredit</strong>
+                <span>FPX semua bank, kad Visa/Mastercard — bayar terus</span>
               </div>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="paymentMethod" value="toyyibpay">
-              <div class="payment-card">
-                <div class="payment-icon">FPX</div>
-                <div class="payment-info">
-                  <strong>Online Banking / Kad Kredit</strong>
-                  <span>FPX semua bank, kad Visa/Mastercard</span>
-                </div>
-              </div>
-            </label>
+            </div>
           </div>
         </div>
 

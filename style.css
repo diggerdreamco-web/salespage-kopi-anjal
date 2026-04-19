@@ -1812,6 +1812,17 @@ img {
   gap: 12px;
 }
 
+/* Single payment card (when QR option disabled) */
+.payment-single .payment-card-active {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, rgba(212, 163, 74, 0.08), rgba(212, 163, 74, 0.02));
+  box-shadow: 0 4px 16px rgba(212, 163, 74, 0.15);
+}
+
+.payment-single .payment-card-active .payment-icon {
+  background: var(--gold-dark);
+}
+
 .payment-option {
   cursor: pointer;
   position: relative;

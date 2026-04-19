@@ -119,8 +119,10 @@ checkoutForm.addEventListener('submit', async (e) => {
   const discount = calcDiscount(selectedPrice);
   const totalPrice = selectedPrice - discount;
 
-  // Get selected payment method
-  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+  // Get payment method (radio if exists, else fallback to hidden input)
+  const checkedRadio = document.querySelector('input[name="paymentMethod"]:checked');
+  const hiddenInput = document.querySelector('input[name="paymentMethod"][type="hidden"]');
+  const paymentMethod = checkedRadio ? checkedRadio.value : (hiddenInput ? hiddenInput.value : 'toyyibpay');
 
   const formData = {
     package: selectedPackage,
