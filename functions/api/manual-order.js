@@ -26,9 +26,9 @@ export async function onRequestPost(context) {
     }
 
     const packageNames = {
-      starter: "Anjal'e - Starter (1 Kotak, 12 sachet)",
-      bestvalue: "Anjal'e - Best Value (3 Kotak, 36 sachet)",
-      hardcore: "Anjal'e - Full Glow (5 Kotak, 60 sachet)",
+      starter: "Anjal'e Starter 1 Kotak (12s)",
+      bestvalue: "Anjal'e Best Value 3 Kotak",
+      hardcore: "Anjal'e Full Glow 5 Kotak",
     };
 
     const billName = packageNames[pkg] || "Anjal'e";
