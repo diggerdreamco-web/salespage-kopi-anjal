@@ -57,6 +57,7 @@ export async function onRequestPost(context) {
             status: 'Pending Bank Transfer',
             paymentMethod: 'QR / Bank Transfer',
           }),
+          redirect: 'follow',
         });
       } catch (e) {
         // Don't fail the order if Sheets is down — still return ref

@@ -34,7 +34,8 @@ export async function onRequestPost(context) {
           status: statusText,
           updateOnly: true,
         }),
-      }).catch(() => {});
+        redirect: 'follow',
+      }).catch(err => console.error('Callback webhook error:', err.message));
     }
 
     return new Response('OK', { status: 200 });

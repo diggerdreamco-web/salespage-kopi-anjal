@@ -9,7 +9,7 @@
 //   GOOGLE_SHEET_WEBHOOK    - Google Apps Script web app URL
 
 export async function onRequestPost(context) {
-  const { request, env } = context;
+  const { request, env, waitUntil } = context;
 
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -71,7 +71,7 @@ export async function onRequestPost(context) {
 
     if (result && result[0] && result[0].BillCode) {
       if (env.GOOGLE_SHEET_WEBHOOK) {
-        fetch(env.GOOGLE_SHEET_WEBHOOK, {
+        const webhookFetch = fetch(env.GOOGLE_SHEET_WEBHOOK, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -88,9 +88,14 @@ export async function onRequestPost(context) {
             voucherCode: body.voucherCode || '',
             discountAmount: body.discountAmount || 0,
             billCode: result[0].BillCode,
+            paymentMethod: 'FPX',
             status: 'Pending',
           }),
-        }).catch(() => {});
+          redirect: 'follow',
+        }).catch(err => console.error('Webhook error:', err.message));
+
+        // Cloudflare Workers terminate quickly — waitUntil keeps fetch alive
+        if (waitUntil) waitUntil(webhookFetch);
       }
 
       return new Response(
