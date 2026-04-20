@@ -87,6 +87,7 @@ export async function onRequestPost(context) {
             originalPrice: body.originalPrice || price,
             voucherCode: body.voucherCode || '',
             discountAmount: body.discountAmount || 0,
+            shipping: body.shipping || 0,
             billCode: result[0].BillCode,
             paymentMethod: 'FPX',
             status: 'Pending',

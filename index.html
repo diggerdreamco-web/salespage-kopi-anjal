@@ -329,18 +329,18 @@
       </div>
 
       <div class="pricing-grid stagger-children">
-        <div class="price-card reveal" data-package="starter" data-price="65">
+        <div class="price-card reveal" data-package="starter" data-price="65" data-shipping="8">
           <div class="price-badge">Cuba Dulu</div>
           <h3>Starter</h3>
           <div class="price">RM65</div>
           <ul>
             <li>1 Kotak (12 sachet)</li>
             <li>Bekalan ~2 minggu</li>
-            <li>Free shipping</li>
+            <li>Shipping +RM8</li>
           </ul>
           <button class="btn btn-outline select-package">Pilih Pakej Ini</button>
         </div>
-        <div class="price-card popular reveal" data-package="bestvalue" data-price="125">
+        <div class="price-card popular reveal" data-package="bestvalue" data-price="125" data-shipping="0">
           <div class="price-badge popular-badge">Paling Laris</div>
           <h3>Best Value</h3>
           <div class="price">RM125</div>
@@ -353,7 +353,7 @@
           </ul>
           <button class="btn btn-primary select-package">Pilih Pakej Ini</button>
         </div>
-        <div class="price-card reveal" data-package="hardcore" data-price="180">
+        <div class="price-card reveal" data-package="hardcore" data-price="180" data-shipping="0">
           <div class="price-badge">Paling Berbaloi</div>
           <h3>Full Glow</h3>
           <div class="price">RM180</div>
@@ -451,7 +451,7 @@
           </div>
           <div class="summary-row">
             <span>Penghantaran:</span>
-            <span class="free">PERCUMA</span>
+            <span id="summaryShipping" class="free">PERCUMA</span>
           </div>
           <div class="summary-row discount-row" id="discountRow" style="display:none;">
             <span>Diskaun (<span id="discountCodeLabel">ANJAL10</span>):</span>

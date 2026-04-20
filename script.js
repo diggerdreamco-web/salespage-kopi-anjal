@@ -8,6 +8,7 @@ const summaryTotalEl = document.getElementById('summaryTotal');
 
 let selectedPackage = null;
 let selectedPrice = 0;
+let selectedShipping = 0;
 
 // ========== VOUCHER SYSTEM ==========
 // Registry kod voucher — tambah kod baru kat sini
@@ -55,8 +56,9 @@ function calcDiscount(basePrice) {
 function updateSummary() {
   if (!selectedPackage) return;
   const discount = calcDiscount(selectedPrice);
-  const finalPrice = selectedPrice - discount;
+  const finalPrice = selectedPrice - discount + selectedShipping;
   const discountRow = document.getElementById('discountRow');
+  const shippingEl = document.getElementById('summaryShipping');
 
   if (discount > 0) {
     document.getElementById('discountCodeLabel').textContent = appliedVoucher.label;
@@ -64,6 +66,17 @@ function updateSummary() {
     discountRow.style.display = 'flex';
   } else {
     discountRow.style.display = 'none';
+  }
+
+  // Shipping display
+  if (shippingEl) {
+    if (selectedShipping > 0) {
+      shippingEl.textContent = `RM${selectedShipping}`;
+      shippingEl.classList.remove('free');
+    } else {
+      shippingEl.textContent = 'PERCUMA';
+      shippingEl.classList.add('free');
+    }
   }
 
   summaryTotalEl.textContent = `RM${finalPrice}`;
@@ -81,6 +94,7 @@ document.querySelectorAll('.select-package').forEach(btn => {
     const card = btn.closest('.price-card');
     selectedPackage = card.dataset.package;
     selectedPrice = parseInt(card.dataset.price);
+    selectedShipping = parseInt(card.dataset.shipping || 0);
 
     const packageName = card.querySelector('h3').textContent;
     const packageDetails = card.querySelector('li').textContent;
@@ -117,7 +131,7 @@ checkoutForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const discount = calcDiscount(selectedPrice);
-  const totalPrice = selectedPrice - discount;
+  const totalPrice = selectedPrice - discount + selectedShipping;
 
   // Get payment method (radio if exists, else fallback to hidden input)
   const checkedRadio = document.querySelector('input[name="paymentMethod"]:checked');
@@ -130,6 +144,7 @@ checkoutForm.addEventListener('submit', async (e) => {
     originalPrice: selectedPrice,
     voucherCode: appliedVoucher ? appliedVoucher.code : '',
     discountAmount: discount,
+    shipping: selectedShipping,
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
     phone: document.getElementById('phone').value,
