@@ -1664,20 +1664,50 @@ img {
     display: none;
   }
 
+  .hero {
+    min-height: auto;
+    padding: 90px 0 60px;
+  }
+
   .hero-bg {
-    opacity: 0.25;
+    opacity: 0.2;
+  }
+
+  .hero-orb-1,
+  .hero-orb-2 {
+    width: 280px;
+    height: 280px;
+    filter: blur(60px);
   }
 
   .hero-content {
     grid-template-columns: 1fr;
-    gap: 24px;
-    max-width: 560px;
-    padding-top: 40px;
+    gap: 8px;
+    max-width: 520px;
+    padding: 0 20px;
   }
 
   .hero-text {
     text-align: center;
     order: 2;
+  }
+
+  .hero-text .hero-tag {
+    font-size: 0.72rem;
+    letter-spacing: 4px;
+    margin-bottom: 14px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 10vw, 3.2rem);
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 28px;
   }
 
   .hero-text .hero-sub {
@@ -1691,10 +1721,20 @@ img {
 
   .hero-product {
     order: 1;
+    margin-bottom: 4px;
   }
 
   .hero-product-img {
-    max-width: 340px;
+    max-width: min(78vw, 320px);
+  }
+
+  .hero-product-glow {
+    inset: 15%;
+    filter: blur(40px);
+  }
+
+  .hero-scroll {
+    display: none;
   }
 
   .modal {
@@ -2105,6 +2145,46 @@ img {
 
   .bank-row {
     flex-wrap: wrap;
+  }
+
+  .hero {
+    padding: 80px 0 48px;
+  }
+
+  .hero-content {
+    padding: 0 16px;
+    gap: 4px;
+  }
+
+  .hero-text .hero-tag {
+    font-size: 0.68rem;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 11vw, 2.8rem);
+    margin-bottom: 14px;
+  }
+
+  .hero-sub {
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+
+  .hero-cta-group .btn-lg {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .hero-product-img {
+    max-width: min(82vw, 280px);
+  }
+
+  .hero-orb-1,
+  .hero-orb-2 {
+    width: 200px;
+    height: 200px;
   }
 }
 
