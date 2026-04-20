@@ -27,8 +27,8 @@ export async function onRequestPost(context) {
 
     const packageNames = {
       starter: "Anjal'e Starter 1 Kotak (12s)",
-      bestvalue: "Anjal'e Best Value 3 Kotak",
-      hardcore: "Anjal'e Full Glow 5 Kotak",
+      bestvalue: "Anjal'e Best Value 2 Kotak",
+      hardcore: "Anjal'e Full Glow 3 Kotak",
     };
 
     const billName = packageNames[pkg] || "Anjal'e";

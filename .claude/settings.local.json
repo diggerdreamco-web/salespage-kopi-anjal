@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo:*)",
+      "Bash(where gh:*)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Read(//c/Users/khair/AppData/Local/**)",
+      "Bash(choco install:*)",
+      "Bash(curl -sL https://github.com/cli/cli/releases/download/v2.89.0/gh_2.89.0_windows_amd64.zip -o /tmp/gh.zip)",
+      "Bash(unzip -o /tmp/gh.zip -d /tmp/gh)",
+      "Read(//tmp/**)",
+      "Bash(/tmp/gh/bin/gh.exe --version)",
+      "Bash(/tmp/gh/bin/gh.exe auth:*)",
+      "Bash(/tmp/gh/bin/gh.exe repo:*)"
+    ]
+  }
+}
