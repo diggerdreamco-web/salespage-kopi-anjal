@@ -1,92 +1,130 @@
-// ========== CHECKOUT SYSTEM ==========
+// ============ CHECKOUT SYSTEM ============
 const modal = document.getElementById('checkoutModal');
 const closeBtn = document.getElementById('closeModal');
 const checkoutForm = document.getElementById('checkoutForm');
 const selectedPackageEl = document.getElementById('selectedPackage');
 const summaryPackageEl = document.getElementById('summaryPackage');
 const summaryTotalEl = document.getElementById('summaryTotal');
+const customRow = document.getElementById('customRow');
+const summaryCustom = document.getElementById('summaryCustom');
+const jerseysContainer = document.getElementById('jerseysContainer');
+
+const CUSTOM_PRICE = 5;
+const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+
+const PACKAGE_LABELS = {
+  single: { name: 'Sehelai Jersi', jerseys: ['Jersi'] },
+  combo2: { name: 'Kombo Home + Away', jerseys: ['Home', 'Away'] },
+  combo4: { name: 'Kombo Lengkap', jerseys: ['Home', 'Away', 'Keeper Home', 'Keeper Away'] },
+};
 
 let selectedPackage = null;
 let selectedPrice = 0;
-let selectedShipping = 0;
+let selectedJerseys = 1;
 
-// ========== VOUCHER SYSTEM ==========
-// Registry kod voucher — tambah kod baru kat sini
-const VOUCHERS = {
-  ANJAL10: { percent: 10, label: 'ANJAL10' },
-  // Contoh tambah kod lain:
-  // RAYA20: { percent: 20, label: 'RAYA20' },
-  // NEWUSER: { amount: 5, label: 'NEWUSER' },  // RM5 fixed discount
-};
+// Build jersey selector form
+function buildJerseyForm(pkgKey) {
+  const pkg = PACKAGE_LABELS[pkgKey];
+  if (!pkg) return;
 
-let appliedVoucher = null; // { code, percent?, amount?, label }
+  jerseysContainer.innerHTML = '';
 
-function applyVoucher(code) {
-  const voucher = VOUCHERS[code];
-  if (!voucher) return false;
-  appliedVoucher = { code, ...voucher };
-
-  // Show banner kat order section
-  const banner = document.getElementById('voucherBanner');
-  if (banner) {
-    document.getElementById('voucherBannerCode').textContent = voucher.label;
-    document.getElementById('voucherBannerPct').textContent = voucher.percent || 0;
-    banner.classList.add('active');
+  // For single jersey, add type selector
+  if (pkgKey === 'single') {
+    jerseysContainer.innerHTML += `
+      <div class="jersey-item">
+        <div class="jersey-item-title">Jersi #1</div>
+        <div class="form-group">
+          <label>Pilih Jenis Jersi *</label>
+          <select class="jersey-type" required>
+            <option value="">— Pilih Jenis —</option>
+            <option value="Home">Home</option>
+            <option value="Away">Away</option>
+            <option value="Keeper Home">Keeper Home</option>
+            <option value="Keeper Away">Keeper Away</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Saiz *</label>
+          <select class="jersey-size" required>
+            <option value="">— Pilih Saiz —</option>
+            ${SIZES.map(s => `<option value="${s}">${s}</option>`).join('')}
+          </select>
+        </div>
+        <label class="jersey-custom-toggle">
+          <input type="checkbox" class="custom-check"> Tambah Nama / Nombor (+RM${CUSTOM_PRICE})
+        </label>
+        <div class="jersey-custom-fields">
+          <div class="form-group" style="margin:0">
+            <label>Nama (max 12 huruf)</label>
+            <input type="text" class="jersey-name" maxlength="12" placeholder="cth: AZAM">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>No.</label>
+            <input type="text" class="jersey-number" maxlength="3" placeholder="10">
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    pkg.jerseys.forEach((type, i) => {
+      jerseysContainer.innerHTML += `
+        <div class="jersey-item" data-type="${type}">
+          <div class="jersey-item-title">Jersi ${i + 1} — ${type}</div>
+          <div class="form-group">
+            <label>Saiz *</label>
+            <select class="jersey-size" required>
+              <option value="">— Pilih Saiz —</option>
+              ${SIZES.map(s => `<option value="${s}">${s}</option>`).join('')}
+            </select>
+          </div>
+          <label class="jersey-custom-toggle">
+            <input type="checkbox" class="custom-check"> Tambah Nama / Nombor (+RM${CUSTOM_PRICE})
+          </label>
+          <div class="jersey-custom-fields">
+            <div class="form-group" style="margin:0">
+              <label>Nama (max 12 huruf)</label>
+              <input type="text" class="jersey-name" maxlength="12" placeholder="cth: AZAM">
+            </div>
+            <div class="form-group" style="margin:0">
+              <label>No.</label>
+              <input type="text" class="jersey-number" maxlength="3" placeholder="10">
+            </div>
+          </div>
+        </div>
+      `;
+    });
   }
 
-  // Refresh summary kalau modal dah ada selected package
-  if (selectedPackage) updateSummary();
-  return true;
+  // Bind custom checkbox toggle
+  document.querySelectorAll('.custom-check').forEach(chk => {
+    chk.addEventListener('change', () => {
+      const fields = chk.closest('.jersey-item').querySelector('.jersey-custom-fields');
+      fields.classList.toggle('active', chk.checked);
+      updateSummary();
+    });
+  });
 }
 
-function removeVoucher() {
-  appliedVoucher = null;
-  const banner = document.getElementById('voucherBanner');
-  if (banner) banner.classList.remove('active');
-  if (selectedPackage) updateSummary();
-}
-
-function calcDiscount(basePrice) {
-  if (!appliedVoucher) return 0;
-  if (appliedVoucher.percent) return Math.round(basePrice * appliedVoucher.percent / 100);
-  if (appliedVoucher.amount) return Math.min(appliedVoucher.amount, basePrice);
-  return 0;
+function getCustomCount() {
+  return document.querySelectorAll('.custom-check:checked').length;
 }
 
 function updateSummary() {
   if (!selectedPackage) return;
-  const discount = calcDiscount(selectedPrice);
-  const finalPrice = selectedPrice - discount + selectedShipping;
-  const discountRow = document.getElementById('discountRow');
-  const shippingEl = document.getElementById('summaryShipping');
+  const customCount = getCustomCount();
+  const customTotal = customCount * CUSTOM_PRICE;
+  const finalPrice = selectedPrice + customTotal;
 
-  if (discount > 0) {
-    document.getElementById('discountCodeLabel').textContent = appliedVoucher.label;
-    document.getElementById('discountAmount').textContent = `-RM${discount}`;
-    discountRow.style.display = 'flex';
+  if (customCount > 0) {
+    summaryCustom.textContent = `+RM${customTotal} (${customCount} helai)`;
+    customRow.style.display = 'flex';
   } else {
-    discountRow.style.display = 'none';
-  }
-
-  // Shipping display
-  if (shippingEl) {
-    if (selectedShipping > 0) {
-      shippingEl.textContent = `RM${selectedShipping}`;
-      shippingEl.classList.remove('free');
-    } else {
-      shippingEl.textContent = 'PERCUMA';
-      shippingEl.classList.add('free');
-    }
+    customRow.style.display = 'none';
   }
 
   summaryTotalEl.textContent = `RM${finalPrice}`;
 }
-
-// Remove voucher button kat banner
-document.addEventListener('DOMContentLoaded', () => {
-  const removeBtn = document.getElementById('removeVoucher');
-  if (removeBtn) removeBtn.addEventListener('click', removeVoucher);
-});
 
 // Package selection
 document.querySelectorAll('.select-package').forEach(btn => {
@@ -94,13 +132,13 @@ document.querySelectorAll('.select-package').forEach(btn => {
     const card = btn.closest('.price-card');
     selectedPackage = card.dataset.package;
     selectedPrice = parseInt(card.dataset.price);
-    selectedShipping = parseInt(card.dataset.shipping || 0);
+    selectedJerseys = parseInt(card.dataset.jerseys);
 
-    const packageName = card.querySelector('h3').textContent;
-    const packageDetails = card.querySelector('li').textContent;
+    const pkg = PACKAGE_LABELS[selectedPackage];
+    selectedPackageEl.textContent = `${pkg.name} — RM${selectedPrice}`;
+    summaryPackageEl.textContent = `${pkg.name} (${selectedJerseys} helai) — RM${selectedPrice}`;
 
-    selectedPackageEl.textContent = `${packageName} — RM${selectedPrice}`;
-    summaryPackageEl.textContent = `${packageName} (${packageDetails})`;
+    buildJerseyForm(selectedPackage);
     updateSummary();
 
     modal.classList.add('active');
@@ -110,41 +148,71 @@ document.querySelectorAll('.select-package').forEach(btn => {
 
 // Close modal
 closeBtn.addEventListener('click', closeModal);
-modal.addEventListener('click', (e) => {
-  if (e.target === modal) closeModal();
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeModal();
-});
+modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
 function closeModal() {
   modal.classList.remove('active');
   document.body.style.overflow = '';
 }
 
-// WhatsApp number untuk order confirmation (tukar ikut no anda)
-const WA_NUMBER = '601110982599';
+const WA_NUMBER = '60123231524';
 
-// Form submission - checkout handler
+// Collect jersey details from form
+function collectJerseyDetails() {
+  const items = document.querySelectorAll('.jersey-item');
+  const details = [];
+  items.forEach((item, i) => {
+    const typeEl = item.querySelector('.jersey-type');
+    const type = typeEl ? typeEl.value : item.dataset.type;
+    const size = item.querySelector('.jersey-size').value;
+    const customCheck = item.querySelector('.custom-check').checked;
+    const name = item.querySelector('.jersey-name').value;
+    const number = item.querySelector('.jersey-number').value;
+    details.push({
+      no: i + 1,
+      type,
+      size,
+      custom: customCheck,
+      name: customCheck ? name : '',
+      number: customCheck ? number : '',
+    });
+  });
+  return details;
+}
+
+// Form submission
 checkoutForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const discount = calcDiscount(selectedPrice);
-  const totalPrice = selectedPrice - discount + selectedShipping;
+  const customCount = getCustomCount();
+  const totalPrice = selectedPrice + (customCount * CUSTOM_PRICE);
+  const jerseyDetails = collectJerseyDetails();
 
-  // Get payment method (radio if exists, else fallback to hidden input)
+  // Validate jersey types & sizes
+  for (const j of jerseyDetails) {
+    if (!j.size) { alert(`Sila pilih saiz untuk Jersi #${j.no}`); return; }
+    if (!j.type) { alert(`Sila pilih jenis untuk Jersi #${j.no}`); return; }
+    if (j.custom && (!j.name || !j.number)) {
+      alert(`Sila isi nama & nombor untuk Jersi #${j.no} (${j.type})`); return;
+    }
+  }
+
   const checkedRadio = document.querySelector('input[name="paymentMethod"]:checked');
-  const hiddenInput = document.querySelector('input[name="paymentMethod"][type="hidden"]');
-  const paymentMethod = checkedRadio ? checkedRadio.value : (hiddenInput ? hiddenInput.value : 'toyyibpay');
+  const paymentMethod = checkedRadio ? checkedRadio.value : 'toyyibpay';
+
+  // Format jersey details into readable string
+  const jerseySummary = jerseyDetails.map(j =>
+    `${j.type} (${j.size})${j.custom ? ` - ${j.name} #${j.number}` : ''}`
+  ).join(' | ');
 
   const formData = {
     package: selectedPackage,
     price: totalPrice,
     originalPrice: selectedPrice,
-    voucherCode: appliedVoucher ? appliedVoucher.code : '',
-    discountAmount: discount,
-    shipping: selectedShipping,
+    customCount,
+    customAmount: customCount * CUSTOM_PRICE,
+    shipping: 0,
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
     phone: document.getElementById('phone').value,
@@ -152,6 +220,8 @@ checkoutForm.addEventListener('submit', async (e) => {
     city: document.getElementById('city').value,
     state: document.getElementById('state').value,
     postcode: document.getElementById('postcode').value,
+    jerseyDetails: jerseySummary,
+    jerseys: jerseyDetails,
   };
 
   const payBtn = document.getElementById('payBtn');
@@ -160,15 +230,12 @@ checkoutForm.addEventListener('submit', async (e) => {
 
   try {
     if (paymentMethod === 'qr') {
-      // ===== QR / Bank Transfer Flow =====
       const response = await fetch('/api/manual-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
       const result = await response.json();
-
       if (result.success) {
         showQrModal(formData, result.orderRef, result.packageName, totalPrice);
         closeModal();
@@ -176,19 +243,15 @@ checkoutForm.addEventListener('submit', async (e) => {
         alert(result.error || 'Gagal memproses order. Sila cuba lagi.');
       }
     } else {
-      // ===== ToyyibPay Flow =====
       const response = await fetch('/api/create-bill', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
       const result = await response.json();
-
       if (result.paymentUrl) {
         window.location.href = result.paymentUrl;
       } else {
-        // DEBUG MODE — tunjuk full error details dari ToyyibPay
         const debugInfo = result.details ? `\n\nDetails: ${JSON.stringify(result.details)}` : '';
         const debugMsg = result.message ? `\n\nMessage: ${result.message}` : '';
         alert((result.error || 'Gagal mencipta pembayaran.') + debugInfo + debugMsg);
@@ -202,7 +265,7 @@ checkoutForm.addEventListener('submit', async (e) => {
   }
 });
 
-// ========== QR MODAL ==========
+// ============ QR MODAL ============
 const qrModal = document.getElementById('qrModal');
 const closeQrBtn = document.getElementById('closeQrModal');
 
@@ -210,12 +273,12 @@ function showQrModal(data, orderRef, packageName, amount) {
   document.getElementById('qrAmount').textContent = `RM${amount}`;
   document.getElementById('qrRef').textContent = orderRef;
 
-  // Build WhatsApp message
   const message = encodeURIComponent(
-    `Hai! Saya dah bayar untuk order Anjal'e:\n\n` +
+    `Hai! Saya nak confirm order jersi YoungTiger:\n\n` +
     `Ref: ${orderRef}\n` +
     `Nama: ${data.name}\n` +
     `Pakej: ${packageName}\n` +
+    `Detail Jersi: ${data.jerseyDetails}\n` +
     `Jumlah: RM${amount}\n` +
     `Telefon: ${data.phone}\n` +
     `Alamat: ${data.address}, ${data.postcode} ${data.city}, ${data.state}\n\n` +
@@ -233,11 +296,9 @@ function closeQrModal() {
 }
 
 closeQrBtn.addEventListener('click', closeQrModal);
-qrModal.addEventListener('click', (e) => {
-  if (e.target === qrModal) closeQrModal();
-});
+qrModal.addEventListener('click', (e) => { if (e.target === qrModal) closeQrModal(); });
 
-// Copy bank account button
+// Copy bank account
 document.querySelectorAll('.copy-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const targetId = btn.dataset.copy;
@@ -250,44 +311,34 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
   });
 });
 
-// ========== FAQ ACCORDION ==========
+// ============ FAQ ACCORDION ============
 document.querySelectorAll('.faq-question').forEach(btn => {
   btn.addEventListener('click', () => {
     const item = btn.parentElement;
     const isOpen = item.classList.contains('open');
-
-    // Close all others
     document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-
-    if (!isOpen) {
-      item.classList.add('open');
-    }
+    if (!isOpen) item.classList.add('open');
   });
 });
 
-// ========== SMOOTH SCROLL ==========
+// ============ SMOOTH SCROLL ============
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', (e) => {
-    e.preventDefault();
     const target = document.querySelector(anchor.getAttribute('href'));
     if (target) {
+      e.preventDefault();
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
 });
 
-// ========== NAVBAR SCROLL EFFECT ==========
+// ============ NAVBAR SCROLL ============
 const navbar = document.getElementById('navbar');
-
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 80) {
-    navbar.classList.add('scrolled');
-  } else {
-    navbar.classList.remove('scrolled');
-  }
+  navbar.classList.toggle('scrolled', window.scrollY > 80);
 });
 
-// ========== SCROLL REVEAL ANIMATIONS ==========
+// ============ SCROLL REVEAL ============
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -295,166 +346,11 @@ const revealObserver = new IntersectionObserver((entries) => {
       revealObserver.unobserve(entry.target);
     }
   });
-}, {
-  threshold: 0.15,
-  rootMargin: '0px 0px -50px 0px'
-});
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
 
-document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
-  revealObserver.observe(el);
-});
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-// ========== PARALLAX HERO ORBS ==========
-window.addEventListener('scroll', () => {
-  const scrolled = window.scrollY;
-  const orbs = document.querySelectorAll('.hero-orb');
-  orbs.forEach((orb, i) => {
-    const speed = 0.15 + (i * 0.05);
-    orb.style.transform = `translateY(${scrolled * speed}px)`;
-  });
-});
-
-// ========== NUMBER COUNTER ANIMATION ==========
-const counterObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const el = entry.target;
-      const text = el.textContent;
-      // Only animate pure numbers
-      const num = parseInt(text.replace(/[^0-9]/g, ''));
-      if (!isNaN(num) && num > 0 && text.match(/^\d/)) {
-        const suffix = text.replace(/[0-9]/g, '');
-        const duration = 1500;
-        const start = performance.now();
-
-        function animate(now) {
-          const elapsed = now - start;
-          const progress = Math.min(elapsed / duration, 1);
-          // Ease out cubic
-          const eased = 1 - Math.pow(1 - progress, 3);
-          const current = Math.floor(eased * num);
-          el.textContent = current.toLocaleString() + suffix;
-          if (progress < 1) requestAnimationFrame(animate);
-        }
-        requestAnimationFrame(animate);
-      }
-      counterObserver.unobserve(el);
-    }
-  });
-}, { threshold: 0.5 });
-
-document.querySelectorAll('.stat-number, .social-bar-item .number').forEach(el => {
-  counterObserver.observe(el);
-});
-
-// ========== COUNTDOWN TIMER ==========
-(function() {
-  // Set countdown 3 hari dari sekarang, simpan dalam localStorage supaya konsisten
-  let endTime = localStorage.getItem('ka_countdown_end');
-  if (!endTime || parseInt(endTime) < Date.now()) {
-    endTime = Date.now() + (3 * 24 * 60 * 60 * 1000); // 3 hari
-    localStorage.setItem('ka_countdown_end', endTime);
-  }
-  endTime = parseInt(endTime);
-
-  function update() {
-    const now = Date.now();
-    let diff = endTime - now;
-    if (diff <= 0) {
-      // Reset balik 3 hari
-      endTime = Date.now() + (3 * 24 * 60 * 60 * 1000);
-      localStorage.setItem('ka_countdown_end', endTime);
-      diff = endTime - now;
-    }
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-    document.getElementById('cdDays').textContent = String(days).padStart(2, '0');
-    document.getElementById('cdHours').textContent = String(hours).padStart(2, '0');
-    document.getElementById('cdMins').textContent = String(mins).padStart(2, '0');
-    document.getElementById('cdSecs').textContent = String(secs).padStart(2, '0');
-  }
-
-  update();
-  setInterval(update, 1000);
-})();
-
-// ========== LIVE VIEWER COUNTER ==========
-(function() {
-  const liveEl = document.getElementById('liveCount');
-  if (!liveEl) return;
-
-  // Random tapi realistic — turun naik antara 18-47
-  let count = Math.floor(Math.random() * 20) + 20;
-  liveEl.textContent = count;
-
-  setInterval(() => {
-    const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
-    count = Math.max(18, Math.min(47, count + change));
-    liveEl.textContent = count;
-  }, 4000);
-})();
-
-// ========== EXIT INTENT POPUP ==========
-(function() {
-  const exitPopup = document.getElementById('exitPopup');
-  const closeExit = document.getElementById('closeExit');
-  const exitCta = document.getElementById('exitCta');
-  let shown = false;
-
-  // Trigger bila mouse keluar dari viewport (desktop)
-  document.addEventListener('mouseleave', (e) => {
-    if (e.clientY < 0 && !shown && !sessionStorage.getItem('ka_exit_shown')) {
-      exitPopup.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      shown = true;
-      sessionStorage.setItem('ka_exit_shown', '1');
-    }
-  });
-
-  // Mobile — trigger lepas 45 saat kat page
-  setTimeout(() => {
-    if (!shown && !sessionStorage.getItem('ka_exit_shown') && window.innerWidth < 768) {
-      exitPopup.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      shown = true;
-      sessionStorage.setItem('ka_exit_shown', '1');
-    }
-  }, 45000);
-
-  function closeExitPopup() {
-    exitPopup.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  closeExit.addEventListener('click', closeExitPopup);
-  exitPopup.addEventListener('click', (e) => {
-    if (e.target === exitPopup) closeExitPopup();
-  });
-
-  // "Gunakan Kod Sekarang" — auto apply voucher + scroll to order
-  exitCta.addEventListener('click', (e) => {
-    e.preventDefault();
-    applyVoucher('ANJAL10');
-    closeExitPopup();
-    // Smooth scroll to order section
-    const orderSection = document.getElementById('order');
-    if (orderSection) orderSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  // Copy discount code on click (kalau user click kod tu je, tak apply automatic)
-  document.getElementById('discountCode').addEventListener('click', function() {
-    navigator.clipboard.writeText('ANJAL10').then(() => {
-      this.textContent = 'TERSALIN!';
-      setTimeout(() => { this.textContent = 'ANJAL10'; }, 1500);
-    });
-  });
-})();
-
-// ========== STICKY CTA BAR ==========
+// ============ STICKY CTA ============
 (function() {
   const stickyCta = document.getElementById('stickyCta');
   const orderSection = document.getElementById('order');
@@ -462,16 +358,10 @@ document.querySelectorAll('.stat-number, .social-bar-item .number').forEach(el =
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      // Tunjuk sticky bar bila order section dah tak nampak
-      if (!entry.isIntersecting) {
-        stickyCta.classList.add('visible');
-      } else {
-        stickyCta.classList.remove('visible');
-      }
+      stickyCta.classList.toggle('visible', !entry.isIntersecting);
     });
   }, { threshold: 0 });
 
-  // Mula observe lepas scroll sikit (jangan show kat hero)
   let started = false;
   window.addEventListener('scroll', () => {
     if (!started && window.scrollY > 600) {

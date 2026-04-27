@@ -12,7 +12,9 @@
       "Read(//tmp/**)",
       "Bash(/tmp/gh/bin/gh.exe --version)",
       "Bash(/tmp/gh/bin/gh.exe auth:*)",
-      "Bash(/tmp/gh/bin/gh.exe repo:*)"
+      "Bash(/tmp/gh/bin/gh.exe repo:*)",
+      "Bash(gh auth *)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" --version)"
     ]
   }
 }

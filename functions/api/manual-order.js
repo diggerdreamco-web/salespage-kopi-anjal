@@ -26,13 +26,13 @@ export async function onRequestPost(context) {
     }
 
     const packageNames = {
-      starter: "Anjal'e Starter 1 Kotak (12s)",
-      bestvalue: "Anjal'e Best Value 2 Kotak",
-      hardcore: "Anjal'e Full Glow 3 Kotak",
+      single: "YoungTiger Jersi Sehelai",
+      combo2: "YoungTiger Kombo Home + Away",
+      combo4: "YoungTiger Kombo Lengkap (4 Helai)",
     };
 
-    const billName = packageNames[pkg] || "Anjal'e";
-    const orderRef = `KA-${Date.now()}`;
+    const billName = packageNames[pkg] || "YoungTiger Jersey";
+    const orderRef = `YT-${Date.now()}`;
 
     // Save to Google Sheets with status "Pending Bank Transfer"
     if (env.GOOGLE_SHEET_WEBHOOK) {
@@ -51,8 +51,9 @@ export async function onRequestPost(context) {
             package: billName,
             price,
             originalPrice: body.originalPrice || price,
-            voucherCode: body.voucherCode || '',
-            discountAmount: body.discountAmount || 0,
+            customCount: body.customCount || 0,
+            customAmount: body.customAmount || 0,
+            jerseyDetails: body.jerseyDetails || '',
             billCode: orderRef,
             status: 'Pending Bank Transfer',
             paymentMethod: 'QR / Bank Transfer',

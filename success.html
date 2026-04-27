@@ -3,26 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Status Pembayaran - Anjal'e</title>
+  <title>Status Pembayaran - YoungTiger</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     .result-page {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, var(--brown-900) 0%, var(--brown-700) 100%);
+      background: linear-gradient(135deg, var(--black) 0%, var(--black-soft) 100%);
       text-align: center;
       padding: 40px 24px;
     }
     .result-box {
-      background: var(--white);
-      border-radius: 24px;
+      background: var(--black-card);
+      border: 2px solid var(--yellow);
+      border-radius: 20px;
       padding: 60px 48px;
       max-width: 520px;
       width: 100%;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+      box-shadow: var(--shadow-yellow);
     }
     .result-icon {
       width: 80px;
@@ -34,63 +35,41 @@
       font-size: 2.5rem;
       margin: 0 auto 24px;
     }
-    .result-icon.success { background: #e8f5e9; color: #27ae60; }
-    .result-icon.failed  { background: #fdecea; color: #c0392b; }
-    .result-icon.pending { background: #fef3c7; color: #b45309; }
+    .result-icon.success { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+    .result-icon.failed  { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+    .result-icon.pending { background: rgba(255, 215, 0, 0.15); color: var(--yellow); }
     .result-box h1 {
-      font-size: 2rem;
-      color: var(--brown-900);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.4rem;
+      color: var(--yellow);
       margin-bottom: 12px;
+      letter-spacing: 1px;
     }
-    .result-box p {
-      color: var(--text-light);
-      font-size: 1.05rem;
-      line-height: 1.7;
-      margin-bottom: 8px;
-    }
+    .result-box > p { color: var(--gray-300); font-size: 1.05rem; line-height: 1.7; margin-bottom: 8px; }
     .result-details {
-      background: var(--brown-50);
+      background: var(--black-soft);
+      border: 1px solid var(--gray-700);
       border-radius: 12px;
       padding: 20px;
       margin: 28px 0;
       text-align: left;
     }
-    .result-details p {
-      font-size: 0.95rem;
-      margin-bottom: 4px;
-    }
-    .result-details strong {
-      color: var(--brown-800);
-    }
-    .result-meta {
-      font-size: 0.85rem;
-      color: var(--text-light);
-      margin-top: 12px;
-      word-break: break-all;
-    }
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-    @media (max-width: 768px) {
-      .result-box { padding: 40px 24px; }
-    }
+    .result-details p { font-size: 0.95rem; margin-bottom: 6px; color: var(--gray-300); }
+    .result-details strong { color: var(--yellow); }
+    .result-meta { font-size: 0.85rem; color: var(--gray-500); margin-top: 12px; word-break: break-all; }
+    .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+    @media (max-width: 768px) { .result-box { padding: 40px 24px; } }
   </style>
 </head>
 <body>
   <div class="result-page">
-    <div class="result-box" id="resultBox">
-      <!-- Content di-inject oleh JS berdasarkan status_id -->
-    </div>
+    <div class="result-box" id="resultBox"></div>
   </div>
 
   <script>
     (function() {
       const params = new URLSearchParams(window.location.search);
-      const statusId = params.get('status_id');     // 1=Success, 2=Pending, 3=Failed
+      const statusId = params.get('status_id');
       const billCode = params.get('billcode') || '';
       const orderId  = params.get('order_id') || '';
       const msg      = params.get('msg') || '';
@@ -99,53 +78,51 @@
       let html = '';
 
       if (statusId === '1') {
-        // ===== SUCCESS =====
-        document.title = "Pembayaran Berjaya - Anjal'e";
+        document.title = "Pembayaran Berjaya - YoungTiger";
         html = `
           <div class="result-icon success">&#10003;</div>
           <h1>Pembayaran Berjaya!</h1>
-          <p>Terima kasih kerana membeli Anjal'e.</p>
+          <p>Terima kasih atas order jersi YoungTiger.</p>
           <div class="result-details">
-            <p><strong>Apa seterusnya?</strong></p>
-            <p>1. Anda akan menerima email pengesahan dalam beberapa minit.</p>
-            <p>2. Pesanan anda akan diproses dan dihantar dalam 1-2 hari bekerja.</p>
-            <p>3. Tracking number akan dihantar melalui SMS/WhatsApp.</p>
+            <p><strong>Apa Seterusnya?</strong></p>
+            <p>1. Anda akan terima email pengesahan dalam beberapa minit.</p>
+            <p>2. Order akan diproses dalam 1-2 hari bekerja.</p>
+            <p>3. Kalau ada custom nama/nombor, kami akan WhatsApp untuk pengesahan.</p>
+            <p>4. Tracking number akan dihantar melalui WhatsApp.</p>
             ${billCode ? `<p class="result-meta">Bill Code: ${billCode}</p>` : ''}
           </div>
-          <p>Ada soalan? Hubungi kami di WhatsApp.</p>
+          <p>Ada soalan? WhatsApp kami: <a href="https://wa.me/60123231524" style="color:var(--yellow)">012-323 1524</a></p>
           <div class="btn-row">
             <a href="/" class="btn btn-primary">Kembali ke Laman Utama</a>
           </div>
         `;
       } else if (statusId === '3') {
-        // ===== FAILED / CANCELLED =====
-        document.title = "Pembayaran Tidak Berjaya - Anjal'e";
+        document.title = "Pembayaran Tidak Berjaya - YoungTiger";
         html = `
           <div class="result-icon failed">&#10007;</div>
           <h1>Pembayaran Tidak Berjaya</h1>
           <p>Transaksi anda telah dibatalkan atau gagal.</p>
-          <p>Jangan risau — tiada caj dikenakan pada akaun anda.</p>
+          <p>Jangan risau — tiada caj dikenakan.</p>
           <div class="result-details">
-            <p><strong>Apa boleh buat?</strong></p>
-            <p>1. Cuba bayar semula dengan bank/kad yang sama atau lain.</p>
-            <p>2. Pastikan baki akaun mencukupi.</p>
-            <p>3. Pastikan sambungan internet stabil.</p>
+            <p><strong>Apa Boleh Buat?</strong></p>
+            <p>1. Cuba bayar semula dengan bank/kad lain.</p>
+            <p>2. Pastikan baki mencukupi.</p>
+            <p>3. Pastikan internet stabil.</p>
             ${msg ? `<p class="result-meta">Sebab: ${msg}</p>` : ''}
             ${billCode ? `<p class="result-meta">Ref: ${billCode}</p>` : ''}
           </div>
           <div class="btn-row">
             <a href="/#order" class="btn btn-primary">Cuba Bayar Semula</a>
-            <a href="/" class="btn btn-outline">Kembali ke Laman Utama</a>
+            <a href="/" class="btn btn-outline">Kembali</a>
           </div>
         `;
       } else {
-        // ===== PENDING / UNKNOWN =====
-        document.title = "Pembayaran Diproses - Anjal'e";
+        document.title = "Pembayaran Diproses - YoungTiger";
         html = `
           <div class="result-icon pending">&#8987;</div>
           <h1>Pembayaran Dalam Proses</h1>
-          <p>Kami sedang menunggu pengesahan daripada bank.</p>
-          <p>Jika anda telah membayar, status akan dikemaskini tidak lama lagi.</p>
+          <p>Kami sedang tunggu pengesahan bank.</p>
+          <p>Status akan dikemaskini tidak lama lagi.</p>
           <div class="result-details">
             <p><strong>Status:</strong> Menunggu pengesahan bank</p>
             ${billCode ? `<p class="result-meta">Bill Code: ${billCode}</p>` : ''}
@@ -153,7 +130,7 @@
           </div>
           <div class="btn-row">
             <a href="/#order" class="btn btn-primary">Cuba Bayar Semula</a>
-            <a href="/" class="btn btn-outline">Kembali ke Laman Utama</a>
+            <a href="/" class="btn btn-outline">Kembali</a>
           </div>
         `;
       }
