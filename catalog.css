@@ -1,3 +1,49 @@
+/* ========== BRAND LOGO ========== */
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  background: var(--white);
+  padding: 6px 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.brand-logo:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(212, 163, 74, 0.25);
+}
+
+.brand-logo img {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+
+.footer-logo-img {
+  height: 56px;
+  width: auto;
+  background: var(--white);
+  padding: 8px 16px;
+  border-radius: 10px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 640px) {
+  .brand-logo {
+    padding: 5px 10px;
+  }
+  .brand-logo img {
+    height: 28px;
+  }
+  .footer-logo-img {
+    height: 44px;
+    margin: 0 auto 12px;
+  }
+}
+
 /* ========== CATALOG (HOMEPAGE) ========== */
 
 .catalog-hero {
