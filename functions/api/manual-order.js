@@ -4,6 +4,8 @@
 // Environment variables:
 //   GOOGLE_SHEET_WEBHOOK - Google Apps Script web app URL
 
+import { resolveBillName, resolveProductName } from './_products.js';
+
 export async function onRequestPost(context) {
   const { request, env } = context;
 
@@ -16,7 +18,7 @@ export async function onRequestPost(context) {
 
   try {
     const body = await request.json();
-    const { name, email, phone, package: pkg, price } = body;
+    const { name, email, phone, package: pkg, price, product: productId } = body;
 
     if (!name || !email || !phone || !pkg || !price) {
       return new Response(
@@ -25,13 +27,8 @@ export async function onRequestPost(context) {
       );
     }
 
-    const packageNames = {
-      starter: "Anjal'e Starter 1 Kotak (12s)",
-      bestvalue: "Anjal'e Best Value 2 Kotak",
-      hardcore: "Anjal'e Full Glow 3 Kotak",
-    };
-
-    const billName = packageNames[pkg] || "Anjal'e";
+    const billName = resolveBillName(productId, pkg);
+    const productName = resolveProductName(productId);
     const orderRef = `KA-${Date.now()}`;
 
     // Save to Google Sheets with status "Pending Bank Transfer"
@@ -48,6 +45,8 @@ export async function onRequestPost(context) {
             city: body.city,
             state: body.state,
             postcode: body.postcode,
+            product: productName,
+            productId: productId || 'anjal-e',
             package: billName,
             price,
             originalPrice: body.originalPrice || price,

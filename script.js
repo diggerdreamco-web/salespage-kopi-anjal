@@ -1,3 +1,7 @@
+// ========== PRODUCT CONFIG ==========
+// Read injected from product page <script>window.PRODUCT_CONFIG = {...}</script>
+const PRODUCT = window.PRODUCT_CONFIG || { id: 'anjal-e', name: "Anjal'e", category: 'Kopi Kesihatan' };
+
 // ========== CHECKOUT SYSTEM ==========
 const modal = document.getElementById('checkoutModal');
 const closeBtn = document.getElementById('closeModal');
@@ -139,6 +143,8 @@ checkoutForm.addEventListener('submit', async (e) => {
   const paymentMethod = checkedRadio ? checkedRadio.value : (hiddenInput ? hiddenInput.value : 'toyyibpay');
 
   const formData = {
+    product: PRODUCT.id,
+    productName: PRODUCT.name,
     package: selectedPackage,
     price: totalPrice,
     originalPrice: selectedPrice,
@@ -212,7 +218,7 @@ function showQrModal(data, orderRef, packageName, amount) {
 
   // Build WhatsApp message
   const message = encodeURIComponent(
-    `Hai! Saya dah bayar untuk order Anjal'e:\n\n` +
+    `Hai! Saya dah bayar untuk order ${PRODUCT.name}:\n\n` +
     `Ref: ${orderRef}\n` +
     `Nama: ${data.name}\n` +
     `Pakej: ${packageName}\n` +
