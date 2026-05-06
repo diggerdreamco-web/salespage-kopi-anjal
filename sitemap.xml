@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <url>
+    <loc>https://teratakniaga.com/</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://teratakniaga.com/images/logo.jpg</image:loc>
+      <image:title>Teratak Niaga</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://teratakniaga.com/anjal-e</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://teratakniaga.com/images/tripleproduct.png</image:loc>
+      <image:title>Anjal'e Kopi Kolagen — 3 Kotak Pakej</image:title>
+      <image:caption>Kopi pracampuran dengan kolagen, Pueraria Mirifica dan biji anggur</image:caption>
+    </image:image>
+  </url>
+
+</urlset>

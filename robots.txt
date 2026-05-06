@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /functions/
+
+Sitemap: https://teratakniaga.com/sitemap.xml
