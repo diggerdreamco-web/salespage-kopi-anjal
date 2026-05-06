@@ -238,10 +238,12 @@ function closeQrModal() {
   document.body.style.overflow = '';
 }
 
-closeQrBtn.addEventListener('click', closeQrModal);
-qrModal.addEventListener('click', (e) => {
-  if (e.target === qrModal) closeQrModal();
-});
+if (closeQrBtn) closeQrBtn.addEventListener('click', closeQrModal);
+if (qrModal) {
+  qrModal.addEventListener('click', (e) => {
+    if (e.target === qrModal) closeQrModal();
+  });
+}
 
 // Copy bank account button
 document.querySelectorAll('.copy-btn').forEach(btn => {
