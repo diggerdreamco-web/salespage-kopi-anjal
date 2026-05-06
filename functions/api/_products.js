@@ -15,14 +15,14 @@ export const PRODUCTS = {
       hardcore: "Anjal'e Full Glow 3 Kotak",
     },
   },
-  // Example for a future product:
-  // 'produk-2': {
-  //   name: 'Produk Kedua',
-  //   packages: {
-  //     starter: 'Produk Kedua Starter',
-  //     bestvalue: 'Produk Kedua Best Value',
-  //   },
-  // },
+  'kasturi-kijang': {
+    name: 'Kasturi Kijang',
+    packages: {
+      single: 'Kasturi Kijang 1 Botol',
+      bundle3: 'Kasturi Kijang 3 Botol',
+      bundle5: 'Kasturi Kijang 5 Botol',
+    },
+  },
 };
 
 export function resolveBillName(productId, pkg) {

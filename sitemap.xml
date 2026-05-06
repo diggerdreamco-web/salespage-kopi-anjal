@@ -25,4 +25,16 @@
     </image:image>
   </url>
 
+  <url>
+    <loc>https://teratakniaga.com/kasturi-kijang</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://teratakniaga.com/images/kasturikijanggredB.PNG</image:loc>
+      <image:title>Pati Minyak Wangi Kasturi Kijang</image:title>
+      <image:caption>Wangian sunnah tanpa alkohol — mesra solat, tahan sepanjang hari</image:caption>
+    </image:image>
+  </url>
+
 </urlset>
