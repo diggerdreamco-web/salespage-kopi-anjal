@@ -128,7 +128,7 @@ function closeModal() {
 }
 
 // WhatsApp number untuk order confirmation (tukar ikut no anda)
-const WA_NUMBER = '601110982599';
+const WA_NUMBER = '601155546788';
 
 // Form submission - checkout handler
 checkoutForm.addEventListener('submit', async (e) => {
