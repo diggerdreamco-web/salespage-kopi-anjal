@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Status Pembayaran - Anjal'e</title>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LB6X67BBXQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LB6X67BBXQ');
+  </script>
+
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -101,6 +111,22 @@
       if (statusId === '1') {
         // ===== SUCCESS =====
         document.title = "Pembayaran Berjaya - Anjal'e";
+
+        // GA4 conversion tracking — fire purchase event
+        if (typeof gtag === 'function') {
+          gtag('event', 'purchase', {
+            transaction_id: billCode || orderId,
+            value: parseFloat(params.get('amount')) || 0,
+            currency: 'MYR',
+            items: [{
+              item_id: orderId || billCode,
+              item_name: "Anjal'e",
+              item_category: 'Kopi Kesihatan',
+              quantity: 1
+            }]
+          });
+        }
+
         html = `
           <div class="result-icon success">&#10003;</div>
           <h1>Pembayaran Berjaya!</h1>
