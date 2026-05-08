@@ -27,14 +27,28 @@
 
   <url>
     <loc>https://teratakniaga.com/kasturi-kijang</loc>
-    <lastmod>2026-05-06</lastmod>
+    <lastmod>2026-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
       <image:loc>https://teratakniaga.com/images/kasturikijanggredB.PNG</image:loc>
-      <image:title>Pati Minyak Wangi Kasturi Kijang</image:title>
+      <image:title>Minyak Kasturi Kijang Original</image:title>
       <image:caption>Wangian sunnah tanpa alkohol — mesra solat, tahan sepanjang hari</image:caption>
     </image:image>
+  </url>
+
+  <url>
+    <loc>https://teratakniaga.com/blog</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://teratakniaga.com/blog/kasturi-kijang-anxiety</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 
 </urlset>
