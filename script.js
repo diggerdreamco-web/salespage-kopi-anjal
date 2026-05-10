@@ -64,12 +64,16 @@ function updateSummary() {
   const discountRow = document.getElementById('discountRow');
   const shippingEl = document.getElementById('summaryShipping');
 
-  if (discount > 0) {
-    document.getElementById('discountCodeLabel').textContent = appliedVoucher.label;
-    document.getElementById('discountAmount').textContent = `-RM${discount}`;
-    discountRow.style.display = 'flex';
-  } else {
-    discountRow.style.display = 'none';
+  if (discountRow) {
+    if (discount > 0) {
+      const codeLabel = document.getElementById('discountCodeLabel');
+      const amountEl = document.getElementById('discountAmount');
+      if (codeLabel) codeLabel.textContent = appliedVoucher.label;
+      if (amountEl) amountEl.textContent = `-RM${discount}`;
+      discountRow.style.display = 'flex';
+    } else {
+      discountRow.style.display = 'none';
+    }
   }
 
   // Shipping display
@@ -357,6 +361,10 @@ document.querySelectorAll('.stat-number, .social-bar-item .number').forEach(el =
 
 // ========== COUNTDOWN TIMER ==========
 (function() {
+  // Guard — skip kalau page tak ada countdown bar
+  const cdDays = document.getElementById('cdDays');
+  if (!cdDays) return;
+
   // Set countdown 3 hari dari sekarang, simpan dalam localStorage supaya konsisten
   let endTime = localStorage.getItem('ka_countdown_end');
   if (!endTime || parseInt(endTime) < Date.now()) {
