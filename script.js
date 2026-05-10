@@ -469,6 +469,8 @@ document.querySelectorAll('.stat-number, .social-bar-item .number').forEach(el =
   const exitPopup = document.getElementById('exitPopup');
   const closeExit = document.getElementById('closeExit');
   const exitCta = document.getElementById('exitCta');
+  // Skip kalau page tak ada exit popup
+  if (!exitPopup) return;
   let shown = false;
 
   // Trigger bila mouse keluar dari viewport (desktop)
@@ -496,28 +498,32 @@ document.querySelectorAll('.stat-number, .social-bar-item .number').forEach(el =
     document.body.style.overflow = '';
   }
 
-  closeExit.addEventListener('click', closeExitPopup);
+  if (closeExit) closeExit.addEventListener('click', closeExitPopup);
   exitPopup.addEventListener('click', (e) => {
     if (e.target === exitPopup) closeExitPopup();
   });
 
   // "Gunakan Kod Sekarang" — auto apply voucher + scroll to order
-  exitCta.addEventListener('click', (e) => {
-    e.preventDefault();
-    applyVoucher('ANJAL10');
-    closeExitPopup();
-    // Smooth scroll to order section
-    const orderSection = document.getElementById('order');
-    if (orderSection) orderSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  // Copy discount code on click (kalau user click kod tu je, tak apply automatic)
-  document.getElementById('discountCode').addEventListener('click', function() {
-    navigator.clipboard.writeText('ANJAL10').then(() => {
-      this.textContent = 'TERSALIN!';
-      setTimeout(() => { this.textContent = 'ANJAL10'; }, 1500);
+  if (exitCta) {
+    exitCta.addEventListener('click', (e) => {
+      e.preventDefault();
+      applyVoucher('ANJAL10');
+      closeExitPopup();
+      const orderSection = document.getElementById('order');
+      if (orderSection) orderSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
-  });
+  }
+
+  // Copy discount code on click
+  const discountCode = document.getElementById('discountCode');
+  if (discountCode) {
+    discountCode.addEventListener('click', function() {
+      navigator.clipboard.writeText('ANJAL10').then(() => {
+        this.textContent = 'TERSALIN!';
+        setTimeout(() => { this.textContent = 'ANJAL10'; }, 1500);
+      });
+    });
+  }
 })();
 
 // ========== STICKY CTA BAR ==========
