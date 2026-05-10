@@ -1339,6 +1339,12 @@ img {
   align-items: start;
 }
 
+/* Single product layout — center one card */
+.pricing-grid.pricing-single {
+  grid-template-columns: minmax(280px, 420px);
+  justify-content: center;
+}
+
 .price-card {
   background: var(--white);
   border: 2px solid var(--brown-100);

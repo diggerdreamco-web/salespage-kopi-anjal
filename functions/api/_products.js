@@ -18,9 +18,49 @@ export const PRODUCTS = {
   'kasturi-kijang': {
     name: 'Kasturi Kijang',
     packages: {
-      single: 'Kasturi Kijang 1 Botol',
-      bundle3: 'Kasturi Kijang 3 Botol',
-      bundle5: 'Kasturi Kijang 5 Botol',
+      single: 'Kasturi Kijang 10ml',
+    },
+  },
+  'kapsul-abe-janji': {
+    name: 'Kapsul Abe Janji',
+    packages: {
+      single: 'Kapsul Abe Janji 1 Botol',
+    },
+  },
+  'lsum-pypt': {
+    name: 'LSUM PYPT',
+    packages: {
+      single: 'LSUM PYPT 80gm',
+    },
+  },
+  'minyak-sauna': {
+    name: 'Minyak Sauna',
+    packages: {
+      single: 'Minyak Sauna 1 Botol',
+    },
+  },
+  'minyak-terapi-saraf': {
+    name: 'Minyak Terapi Saraf',
+    packages: {
+      single: 'Minyak Terapi Saraf 1 Botol',
+    },
+  },
+  'minyak-urut': {
+    name: 'Minyak Urut',
+    packages: {
+      single: 'Minyak Urut 1 Botol',
+    },
+  },
+  'sabun-kasturi-kijang': {
+    name: 'Sabun Kasturi Kijang',
+    packages: {
+      single: 'Sabun Kasturi Kijang 1 Pcs',
+    },
+  },
+  'ubat-gatal': {
+    name: 'Ubat Gatal',
+    packages: {
+      single: 'Ubat Gatal 1 Pek',
     },
   },
 };

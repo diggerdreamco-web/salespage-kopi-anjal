@@ -51,4 +51,81 @@
     <priority>0.8</priority>
   </url>
 
+  <url>
+    <loc>https://teratakniaga.com/kapsul-abe-janji</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://teratakniaga.com/images/kapsulabejanji.jpeg</image:loc>
+      <image:title>Kapsul Abe Janji - Premium Natural Energy Booster</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://teratakniaga.com/lsum-pypt</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://teratakniaga.com/images/LSUMPYPT.jpeg</image:loc>
+      <image:title>LSUM PYPT - Penjagaan Intim Wanita</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://teratakniaga.com/ubat-gatal</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://teratakniaga.com/images/ubatgatal.jpeg</image:loc>
+      <image:title>Ubat Gatal Herba</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://teratakniaga.com/sabun-kasturi-kijang</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://teratakniaga.com/images/sabunkasturikijang.jpeg</image:loc>
+      <image:title>Sabun Kasturi Kijang Premium Homemade</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://teratakniaga.com/minyak-urut</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://teratakniaga.com/images/minyakururt.jpeg</image:loc>
+      <image:title>Minyak Urut Tradisional</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://teratakniaga.com/minyak-terapi-saraf</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://teratakniaga.com/images/minyakterapisaraf.jpeg</image:loc>
+      <image:title>Minyak Terapi Saraf</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://teratakniaga.com/minyak-sauna</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://teratakniaga.com/images/minyaksauna.jpeg</image:loc>
+      <image:title>Minyak Sauna Aromaterapi</image:title>
+    </image:image>
+  </url>
+
 </urlset>
