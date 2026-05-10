@@ -27,6 +27,12 @@ export const PRODUCTS = {
       single: 'Kapsul Abe Janji 1 Botol',
     },
   },
+  'kapsul-kimanis': {
+    name: 'Kapsul KiManis',
+    packages: {
+      single: 'Kapsul KiManis 1 Botol (20s)',
+    },
+  },
   'lsum-pypt': {
     name: 'LSUM PYPT',
     packages: {
