@@ -22,7 +22,7 @@ export async function onRequestPost(context) {
 
   try {
     const body = await request.json();
-    const { name, email, phone, package: pkg, price, product: productId } = body;
+    const { name, email, phone, package: pkg, price, product: productId, quantity } = body;
 
     if (!name || !email || !phone || !pkg || !price) {
       return new Response(
@@ -31,8 +31,18 @@ export async function onRequestPost(context) {
       );
     }
 
-    const billName = resolveBillName(productId, pkg);
+    let billName = resolveBillName(productId, pkg);
     const productName = resolveProductName(productId);
+    const qty = parseInt(quantity) || 1;
+    if (qty > 1) {
+      const suffix = ` x${qty}`;
+      // ToyyibPay billName max 30 chars — truncate base name if needed
+      if ((billName + suffix).length > 30) {
+        billName = billName.slice(0, 30 - suffix.length).trim() + suffix;
+      } else {
+        billName += suffix;
+      }
+    }
     const billAmount = price * 100;
     const siteUrl = env.SITE_URL || 'https://teratakniaga.com';
 
@@ -82,6 +92,7 @@ export async function onRequestPost(context) {
             product: productName,
             productId: productId || 'anjal-e',
             package: billName,
+            quantity: qty,
             price,
             originalPrice: body.originalPrice || price,
             voucherCode: body.voucherCode || '',

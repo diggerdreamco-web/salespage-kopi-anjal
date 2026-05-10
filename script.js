@@ -13,6 +13,41 @@ const summaryTotalEl = document.getElementById('summaryTotal');
 let selectedPackage = null;
 let selectedPrice = 0;
 let selectedShipping = 0;
+let selectedQuantity = 1;
+
+// Inject quantity control into checkout modal (lazy — first time package selected)
+function ensureQuantityControl() {
+  let ctrl = document.getElementById('qtyControl');
+  if (ctrl) {
+    selectedQuantity = 1;
+    document.getElementById('qtyDisplay').textContent = '1';
+    return;
+  }
+  if (!modal) return;
+  const sub = modal.querySelector('.modal-sub');
+  if (!sub) return;
+  ctrl = document.createElement('div');
+  ctrl.id = 'qtyControl';
+  ctrl.className = 'qty-control';
+  ctrl.innerHTML = `
+    <span class="qty-label">Kuantiti:</span>
+    <div class="qty-buttons">
+      <button type="button" class="qty-btn" id="qtyMinus" aria-label="Kurang">−</button>
+      <span id="qtyDisplay" class="qty-display">1</span>
+      <button type="button" class="qty-btn" id="qtyPlus" aria-label="Tambah">+</button>
+    </div>
+  `;
+  sub.insertAdjacentElement('afterend', ctrl);
+  document.getElementById('qtyMinus').addEventListener('click', () => changeQty(-1));
+  document.getElementById('qtyPlus').addEventListener('click', () => changeQty(1));
+}
+
+function changeQty(delta) {
+  selectedQuantity = Math.max(1, Math.min(20, selectedQuantity + delta));
+  const display = document.getElementById('qtyDisplay');
+  if (display) display.textContent = selectedQuantity;
+  updateSummary();
+}
 
 // ========== VOUCHER SYSTEM ==========
 // Registry kod voucher — tambah kod baru kat sini
@@ -59,8 +94,9 @@ function calcDiscount(basePrice) {
 
 function updateSummary() {
   if (!selectedPackage) return;
-  const discount = calcDiscount(selectedPrice);
-  const finalPrice = selectedPrice - discount + selectedShipping;
+  const subtotal = selectedPrice * selectedQuantity;
+  const discount = calcDiscount(subtotal);
+  const finalPrice = subtotal - discount + selectedShipping;
   const discountRow = document.getElementById('discountRow');
   const shippingEl = document.getElementById('summaryShipping');
 
@@ -88,6 +124,15 @@ function updateSummary() {
   }
 
   summaryTotalEl.textContent = `RM${finalPrice}`;
+
+  // Update package summary line to reflect quantity
+  if (summaryPackageEl && selectedQuantity > 1) {
+    const baseName = summaryPackageEl.dataset.baseName || summaryPackageEl.textContent.split(' × ')[0];
+    summaryPackageEl.dataset.baseName = baseName;
+    summaryPackageEl.textContent = `${baseName} × ${selectedQuantity}`;
+  } else if (summaryPackageEl && summaryPackageEl.dataset.baseName) {
+    summaryPackageEl.textContent = summaryPackageEl.dataset.baseName;
+  }
 }
 
 // Remove voucher button kat banner
@@ -107,7 +152,9 @@ document.querySelectorAll('.select-package').forEach(btn => {
     const packageName = card.querySelector('h3').textContent;
     const packageDetails = card.querySelector('li').textContent;
 
+    ensureQuantityControl();
     selectedPackageEl.textContent = `${packageName} — RM${selectedPrice}`;
+    if (summaryPackageEl) summaryPackageEl.dataset.baseName = `${packageName} (${packageDetails})`;
     summaryPackageEl.textContent = `${packageName} (${packageDetails})`;
     updateSummary();
 
@@ -138,8 +185,9 @@ const WA_NUMBER = '601155546788';
 checkoutForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const discount = calcDiscount(selectedPrice);
-  const totalPrice = selectedPrice - discount + selectedShipping;
+  const subtotal = selectedPrice * selectedQuantity;
+  const discount = calcDiscount(subtotal);
+  const totalPrice = subtotal - discount + selectedShipping;
 
   // Get payment method (radio if exists, else fallback to hidden input)
   const checkedRadio = document.querySelector('input[name="paymentMethod"]:checked');
@@ -150,8 +198,10 @@ checkoutForm.addEventListener('submit', async (e) => {
     product: PRODUCT.id,
     productName: PRODUCT.name,
     package: selectedPackage,
+    quantity: selectedQuantity,
+    unitPrice: selectedPrice,
     price: totalPrice,
-    originalPrice: selectedPrice,
+    originalPrice: subtotal,
     voucherCode: appliedVoucher ? appliedVoucher.code : '',
     discountAmount: discount,
     shipping: selectedShipping,

@@ -18,7 +18,7 @@ export async function onRequestPost(context) {
 
   try {
     const body = await request.json();
-    const { name, email, phone, package: pkg, price, product: productId } = body;
+    const { name, email, phone, package: pkg, price, product: productId, quantity } = body;
 
     if (!name || !email || !phone || !pkg || !price) {
       return new Response(
@@ -27,8 +27,10 @@ export async function onRequestPost(context) {
       );
     }
 
-    const billName = resolveBillName(productId, pkg);
+    let billName = resolveBillName(productId, pkg);
     const productName = resolveProductName(productId);
+    const qty = parseInt(quantity) || 1;
+    if (qty > 1) billName += ` x${qty}`;
     const orderRef = `KA-${Date.now()}`;
 
     // Save to Google Sheets with status "Pending Bank Transfer"
@@ -48,6 +50,7 @@ export async function onRequestPost(context) {
             product: productName,
             productId: productId || 'anjal-e',
             package: billName,
+            quantity: qty,
             price,
             originalPrice: body.originalPrice || price,
             voucherCode: body.voucherCode || '',
