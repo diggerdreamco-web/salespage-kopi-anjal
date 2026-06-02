@@ -24,13 +24,8 @@ export const PRODUCTS = {
   'kapsul-abe-janji': {
     name: 'Kapsul Abe Janji',
     packages: {
-      single: 'Kapsul Abe Janji 1 Botol (12s)',
-    },
-  },
-  'kapsul-kimanis': {
-    name: 'Kapsul KiManis',
-    packages: {
-      single: 'Kapsul KiManis 1 Botol (20s)',
+      starter: 'Kapsul Abe Janji 1 Botol (4s)',
+      bestvalue: 'Kapsul Abe Janji 1 Botol (12s)',
     },
   },
   'kapsul-kimanis': {
