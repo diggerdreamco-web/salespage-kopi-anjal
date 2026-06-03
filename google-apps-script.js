@@ -33,16 +33,29 @@
 
 const SHEET_ID = '1QTIkZZlvsjO8fC3LhX28DeGB5Iz-n8VLBnf9rzMaPg8';
 
-// CHANGE ME — secret untuk admin dashboard (dlm /admin page)
-// Sama dgn `ADMIN_SECRET` constant dlm admin/index.html
-const ADMIN_SECRET = 'CHANGE_ME_admin_2026';
+// Password untuk admin dashboard disimpan dlm Script Properties (encrypted)
+// SETUP SEKALI SAHAJA:
+//   1. Apps Script Editor → Project Settings (icon gear) → Script Properties
+//   2. Add Property: name = ADMIN_SECRET, value = <password-anda>
+//   3. Save
+// Untuk tukar password kemudian, ubah dlm Script Properties — tak perlu redeploy.
+
+function getAdminSecret() {
+  return PropertiesService.getScriptProperties().getProperty('ADMIN_SECRET');
+}
 
 // GET — return orders untuk dashboard
 // URL: <apps-script-url>?secret=YOUR_SECRET
 function doGet(e) {
   try {
     var secret = e.parameter.secret;
-    if (secret !== ADMIN_SECRET) {
+    var adminSecret = getAdminSecret();
+    if (!adminSecret) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'error', message: 'ADMIN_SECRET not set in Script Properties' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    if (secret !== adminSecret) {
       return ContentService
         .createTextOutput(JSON.stringify({ status: 'unauthorized' }))
         .setMimeType(ContentService.MimeType.JSON);

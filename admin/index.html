@@ -238,16 +238,18 @@
 
   <script>
     // ============================================
-    // CONFIG — UPDATE THESE:
+    // CONFIG — UPDATE THIS:
     //
-    // 1. ADMIN_SECRET — kena sama dgn google-apps-script.js
-    // 2. APPS_SCRIPT_URL — copy dari Deploy > Manage Deployments di Apps Script
-    //    (URL bentuk: https://script.google.com/macros/s/.../exec)
+    // APPS_SCRIPT_URL — copy dari Deploy > Manage Deployments di Apps Script
+    // (URL bentuk: https://script.google.com/macros/s/.../exec)
+    //
+    // Password DISIMPAN dlm Script Properties di Apps Script (encrypted).
+    // Tidak hardcoded di sini — server-side verify.
     // ============================================
-    const ADMIN_SECRET = 'CHANGE_ME_admin_2026';
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/REPLACE_WITH_YOUR_DEPLOYMENT_ID/exec';
 
     let allOrders = [];
+    let sessionSecret = null;  // dipegang sementara session je, tak commit ke localStorage as plaintext
 
     // Login
     const loginOverlay = document.getElementById('loginOverlay');
@@ -256,24 +258,48 @@
     const loginBtn = document.getElementById('loginBtn');
     const loginError = document.getElementById('loginError');
 
-    function tryLogin() {
-      const pw = passwordInput.value;
-      if (pw === ADMIN_SECRET) {
-        localStorage.setItem('tn_admin_auth', '1');
-        loginOverlay.style.display = 'none';
-        dashboard.style.display = 'block';
-        loadOrders();
-      } else {
-        loginError.textContent = 'Kata laluan salah';
-        passwordInput.value = '';
-        passwordInput.focus();
+    async function tryLogin() {
+      const pw = passwordInput.value.trim();
+      if (!pw) return;
+      loginError.textContent = '';
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Memeriksa…';
+      try {
+        const url = `${APPS_SCRIPT_URL}?secret=${encodeURIComponent(pw)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.status === 'ok') {
+          // Verified — simpan dlm sessionStorage (clear bila browser tutup)
+          sessionSecret = pw;
+          sessionStorage.setItem('tn_admin_secret', pw);
+          loginOverlay.style.display = 'none';
+          dashboard.style.display = 'block';
+          allOrders = data.orders || [];
+          renderStats();
+          populateProductFilter();
+          renderTable();
+        } else if (data.status === 'unauthorized') {
+          loginError.textContent = 'Kata laluan salah';
+          passwordInput.value = '';
+          passwordInput.focus();
+        } else {
+          loginError.textContent = data.message || 'Ralat tidak diketahui';
+        }
+      } catch (err) {
+        loginError.textContent = 'Tidak boleh hubung server: ' + err.message;
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Log Masuk';
       }
     }
 
     loginBtn.addEventListener('click', tryLogin);
     passwordInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
 
-    if (localStorage.getItem('tn_admin_auth') === '1') {
+    // Auto-login kalau ada session secret yg valid
+    const savedSecret = sessionStorage.getItem('tn_admin_secret');
+    if (savedSecret) {
+      sessionSecret = savedSecret;
       loginOverlay.style.display = 'none';
       dashboard.style.display = 'block';
       loadOrders();
@@ -282,7 +308,8 @@
     }
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('tn_admin_auth');
+      sessionStorage.removeItem('tn_admin_secret');
+      sessionSecret = null;
       location.reload();
     });
 
@@ -290,11 +317,17 @@
 
     // Load orders
     async function loadOrders() {
+      if (!sessionSecret) { location.reload(); return; }
       document.getElementById('ordersBody').innerHTML = '<tr><td colspan="9" class="loading">Loading…</td></tr>';
       try {
-        const url = `${APPS_SCRIPT_URL}?secret=${encodeURIComponent(ADMIN_SECRET)}`;
+        const url = `${APPS_SCRIPT_URL}?secret=${encodeURIComponent(sessionSecret)}`;
         const res = await fetch(url);
         const data = await res.json();
+        if (data.status === 'unauthorized') {
+          sessionStorage.removeItem('tn_admin_secret');
+          location.reload();
+          return;
+        }
         if (data.status !== 'ok') {
           throw new Error(data.message || 'Failed');
         }
@@ -303,7 +336,7 @@
         populateProductFilter();
         renderTable();
       } catch (err) {
-        document.getElementById('ordersBody').innerHTML = `<tr><td colspan="9" class="empty" style="color:var(--red);">Error: ${err.message}<br><small>Check ADMIN_SECRET + APPS_SCRIPT_URL dlm /admin/index.html</small></td></tr>`;
+        document.getElementById('ordersBody').innerHTML = `<tr><td colspan="9" class="empty" style="color:var(--red);">Error: ${err.message}<br><small>Check APPS_SCRIPT_URL dlm /admin/index.html</small></td></tr>`;
       }
     }
 
