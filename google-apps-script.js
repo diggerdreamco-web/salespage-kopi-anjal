@@ -4,12 +4,12 @@
 //
 // SETUP:
 //
-// 1. Buka Google Sheet — copy SHEET_ID dari URL
-//    (URL: https://docs.google.com/spreadsheets/d/{SHEET_ID}/edit)
+// 1. Apps Script Editor → ⚙️ Project Settings → Script Properties
+//    Add 2 properties:
+//      - SHEET_ID      = <copy dari Google Sheet URL>
+//      - ADMIN_SECRET  = <password admin dashboard>
 //
-// 2. Update SHEET_ID constant bawah dgn ID sheet anda
-//
-// 3. Pada Row 1 (header), tulis:
+// 2. Pada Row 1 Sheet (header), tulis:
 //    A1: Tarikh        J1: Pakej
 //    B1: Nama          K1: Harga (RM)
 //    C1: Email         L1: Harga Asal
@@ -31,17 +31,19 @@
 //
 // =====================================================
 
-const SHEET_ID = '1QTIkZZlvsjO8fC3LhX28DeGB5Iz-n8VLBnf9rzMaPg8';
-
-// Password untuk admin dashboard disimpan dlm Script Properties (encrypted)
-// SETUP SEKALI SAHAJA:
-//   1. Apps Script Editor → Project Settings (icon gear) → Script Properties
-//   2. Add Property: name = ADMIN_SECRET, value = <password-anda>
-//   3. Save
-// Untuk tukar password kemudian, ubah dlm Script Properties — tak perlu redeploy.
+// Secrets disimpan dlm Script Properties (encrypted)
+// SETUP SEKALI SAHAJA — Apps Script Editor → Project Settings (⚙️) → Script Properties:
+//   1. ADMIN_SECRET — password untuk admin dashboard
+//   2. SHEET_ID     — copy dari Google Sheet URL
+//                     (URL: docs.google.com/spreadsheets/d/{SHEET_ID}/edit)
+// Untuk tukar kemudian, ubah dlm Script Properties — tak perlu redeploy.
 
 function getAdminSecret() {
   return PropertiesService.getScriptProperties().getProperty('ADMIN_SECRET');
+}
+
+function getSheetId() {
+  return PropertiesService.getScriptProperties().getProperty('SHEET_ID');
 }
 
 // GET — return orders untuk dashboard
@@ -61,7 +63,7 @@ function doGet(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
-    var ss = SpreadsheetApp.openById(SHEET_ID);
+    var ss = SpreadsheetApp.openById(getSheetId());
     var sheet = ss.getActiveSheet();
     var range = sheet.getDataRange();
     var values = range.getValues();
@@ -110,7 +112,7 @@ function doGet(e) {
 
 function doPost(e) {
   try {
-    var ss = SpreadsheetApp.openById(SHEET_ID);
+    var ss = SpreadsheetApp.openById(getSheetId());
     var sheet = ss.getActiveSheet();
     var data = JSON.parse(e.postData.contents);
 
@@ -164,7 +166,7 @@ function doPost(e) {
 
 // Helper — test deployment
 function testConnection() {
-  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var ss = SpreadsheetApp.openById(getSheetId());
   var sheet = ss.getActiveSheet();
   Logger.log('Sheet name: ' + sheet.getName());
   Logger.log('Total rows: ' + sheet.getLastRow());
