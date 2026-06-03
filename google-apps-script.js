@@ -33,6 +33,68 @@
 
 const SHEET_ID = '1QTIkZZlvsjO8fC3LhX28DeGB5Iz-n8VLBnf9rzMaPg8';
 
+// CHANGE ME — secret untuk admin dashboard (dlm /admin page)
+// Sama dgn `ADMIN_SECRET` constant dlm admin/index.html
+const ADMIN_SECRET = 'CHANGE_ME_admin_2026';
+
+// GET — return orders untuk dashboard
+// URL: <apps-script-url>?secret=YOUR_SECRET
+function doGet(e) {
+  try {
+    var secret = e.parameter.secret;
+    if (secret !== ADMIN_SECRET) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'unauthorized' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var ss = SpreadsheetApp.openById(SHEET_ID);
+    var sheet = ss.getActiveSheet();
+    var range = sheet.getDataRange();
+    var values = range.getValues();
+
+    if (values.length < 2) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'ok', orders: [] }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var orders = [];
+    for (var i = 1; i < values.length; i++) {
+      var row = values[i];
+      orders.push({
+        tarikh: row[0],
+        nama: row[1],
+        email: row[2],
+        telefon: row[3],
+        alamat: row[4],
+        bandar: row[5],
+        negeri: row[6],
+        poskod: row[7],
+        produk: row[8],
+        pakej: row[9],
+        harga: Number(row[10]) || 0,
+        hargaAsal: Number(row[11]) || 0,
+        voucher: row[12],
+        diskaun: Number(row[13]) || 0,
+        shipping: Number(row[14]) || 0,
+        billCode: row[15],
+        kaedah: row[16],
+        status: row[17] || 'Pending'
+      });
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'ok', orders: orders.reverse() }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'error', message: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
 function doPost(e) {
   try {
     var ss = SpreadsheetApp.openById(SHEET_ID);

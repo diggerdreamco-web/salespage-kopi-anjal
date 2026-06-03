@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Dashboard — Teratak Niaga</title>
+
+  <link rel="icon" type="image/jpeg" href="/images/logo.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf6f0;
+      --card: #ffffff;
+      --border: #e7ddcd;
+      --text: #2a1a0a;
+      --muted: #7a6b58;
+      --brand: #c8a052;
+      --brand-dark: #a38240;
+      --green: #2d8659;
+      --red: #c44545;
+      --orange: #e08e3c;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container { max-width: 1280px; margin: 0 auto; }
+
+    /* HEADER */
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 32px; flex-wrap: wrap; gap: 16px;
+    }
+    .header h1 { font-size: 1.5rem; font-weight: 700; }
+    .header-actions { display: flex; gap: 12px; align-items: center; }
+    .btn {
+      padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--card); color: var(--text); cursor: pointer;
+      font-size: 0.875rem; font-weight: 500; font-family: inherit;
+    }
+    .btn:hover { background: var(--bg); }
+    .btn-primary { background: var(--brand); color: white; border-color: var(--brand); }
+    .btn-primary:hover { background: var(--brand-dark); }
+
+    /* LOGIN */
+    .login-overlay {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center; z-index: 100;
+    }
+    .login-card {
+      background: var(--card); padding: 40px; border-radius: 16px;
+      border: 1px solid var(--border); max-width: 380px; width: 100%;
+      text-align: center;
+    }
+    .login-card img { width: 60px; height: 60px; border-radius: 12px; margin-bottom: 16px; }
+    .login-card h2 { margin-bottom: 8px; font-size: 1.25rem; }
+    .login-card p { color: var(--muted); margin-bottom: 24px; font-size: 0.9rem; }
+    .login-card input {
+      width: 100%; padding: 12px 14px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 1rem; margin-bottom: 12px; font-family: inherit;
+    }
+    .login-card input:focus { outline: 2px solid var(--brand); border-color: var(--brand); }
+    .login-error { color: var(--red); font-size: 0.85rem; margin-top: 8px; min-height: 1.2em; }
+
+    /* STATS */
+    .stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--card); padding: 20px; border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-value { font-size: 1.75rem; font-weight: 700; }
+    .stat-sub { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+    /* FILTERS */
+    .filters {
+      display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;
+      align-items: center;
+    }
+    .filters select, .filters input {
+      padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--card); font-size: 0.875rem; font-family: inherit;
+    }
+    .filters label { font-size: 0.85rem; color: var(--muted); }
+
+    /* TABLE */
+    .table-wrap {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th, td {
+      padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    th {
+      background: var(--bg); font-weight: 600; color: var(--muted);
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+      position: sticky; top: 0; z-index: 1;
+    }
+    tbody tr:hover { background: var(--bg); }
+    tbody tr:last-child td { border-bottom: none; }
+    td.amount { font-variant-numeric: tabular-nums; font-weight: 600; }
+
+    .badge {
+      display: inline-block; padding: 4px 10px; border-radius: 999px;
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-success { background: #e6f4ee; color: var(--green); }
+    .badge-pending { background: #fef3e7; color: var(--orange); }
+    .badge-fail { background: #fdeaea; color: var(--red); }
+
+    .empty {
+      text-align: center; padding: 60px 20px; color: var(--muted);
+    }
+    .loading {
+      text-align: center; padding: 60px 20px; color: var(--muted);
+    }
+
+    /* MOBILE */
+    @media (max-width: 640px) {
+      body { padding: 16px; }
+      .header h1 { font-size: 1.2rem; }
+      .stat-value { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <img src="/images/logo.jpg" alt="Teratak Niaga">
+      <h2>Admin Dashboard</h2>
+      <p>Masukkan kata laluan untuk akses</p>
+      <input type="password" id="passwordInput" placeholder="Kata laluan" autocomplete="off">
+      <button class="btn btn-primary" id="loginBtn" style="width:100%;padding:12px;font-size:1rem;">Log Masuk</button>
+      <div class="login-error" id="loginError"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="container" id="dashboard" style="display:none;">
+
+    <header class="header">
+      <h1>Dashboard Pembelian</h1>
+      <div class="header-actions">
+        <button class="btn" id="refreshBtn">↻ Refresh</button>
+        <button class="btn" id="logoutBtn">Logout</button>
+      </div>
+    </header>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Hari Ini</div>
+        <div class="stat-value" id="statToday">—</div>
+        <div class="stat-sub" id="statTodayRevenue">RM0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">7 Hari Lepas</div>
+        <div class="stat-value" id="statWeek">—</div>
+        <div class="stat-sub" id="statWeekRevenue">RM0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Bulan Ini</div>
+        <div class="stat-value" id="statMonth">—</div>
+        <div class="stat-sub" id="statMonthRevenue">RM0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Jumlah Semua</div>
+        <div class="stat-value" id="statTotal">—</div>
+        <div class="stat-sub" id="statTotalRevenue">RM0</div>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+      <label>Produk:
+        <select id="filterProduct"><option value="">Semua</option></select>
+      </label>
+      <label>Status:
+        <select id="filterStatus">
+          <option value="">Semua</option>
+          <option value="Success">Success</option>
+          <option value="Pending">Pending</option>
+          <option value="Failed">Failed</option>
+        </select>
+      </label>
+      <label>Cari:
+        <input type="text" id="filterSearch" placeholder="Nama / email / telefon">
+      </label>
+      <span style="color:var(--muted);font-size:0.85rem;margin-left:auto;" id="resultCount"></span>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Tarikh</th>
+              <th>Nama</th>
+              <th>Telefon</th>
+              <th>Produk</th>
+              <th>Pakej</th>
+              <th>Harga</th>
+              <th>Voucher</th>
+              <th>Status</th>
+              <th>Bill</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody">
+            <tr><td colspan="9" class="loading">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ============================================
+    // CONFIG — UPDATE THESE:
+    //
+    // 1. ADMIN_SECRET — kena sama dgn google-apps-script.js
+    // 2. APPS_SCRIPT_URL — copy dari Deploy > Manage Deployments di Apps Script
+    //    (URL bentuk: https://script.google.com/macros/s/.../exec)
+    // ============================================
+    const ADMIN_SECRET = 'CHANGE_ME_admin_2026';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/REPLACE_WITH_YOUR_DEPLOYMENT_ID/exec';
+
+    let allOrders = [];
+
+    // Login
+    const loginOverlay = document.getElementById('loginOverlay');
+    const dashboard = document.getElementById('dashboard');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
+
+    function tryLogin() {
+      const pw = passwordInput.value;
+      if (pw === ADMIN_SECRET) {
+        localStorage.setItem('tn_admin_auth', '1');
+        loginOverlay.style.display = 'none';
+        dashboard.style.display = 'block';
+        loadOrders();
+      } else {
+        loginError.textContent = 'Kata laluan salah';
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }
+
+    loginBtn.addEventListener('click', tryLogin);
+    passwordInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+    if (localStorage.getItem('tn_admin_auth') === '1') {
+      loginOverlay.style.display = 'none';
+      dashboard.style.display = 'block';
+      loadOrders();
+    } else {
+      passwordInput.focus();
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('tn_admin_auth');
+      location.reload();
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', loadOrders);
+
+    // Load orders
+    async function loadOrders() {
+      document.getElementById('ordersBody').innerHTML = '<tr><td colspan="9" class="loading">Loading…</td></tr>';
+      try {
+        const url = `${APPS_SCRIPT_URL}?secret=${encodeURIComponent(ADMIN_SECRET)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.status !== 'ok') {
+          throw new Error(data.message || 'Failed');
+        }
+        allOrders = data.orders || [];
+        renderStats();
+        populateProductFilter();
+        renderTable();
+      } catch (err) {
+        document.getElementById('ordersBody').innerHTML = `<tr><td colspan="9" class="empty" style="color:var(--red);">Error: ${err.message}<br><small>Check ADMIN_SECRET + APPS_SCRIPT_URL dlm /admin/index.html</small></td></tr>`;
+      }
+    }
+
+    // Stats
+    function renderStats() {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+      let tCount = 0, tRev = 0, wCount = 0, wRev = 0, mCount = 0, mRev = 0;
+      let totalCount = 0, totalRev = 0;
+
+      allOrders.forEach(o => {
+        const d = parseDate(o.tarikh);
+        const isSuccess = (o.status || '').toLowerCase() === 'success';
+        if (!d) return;
+        totalCount++;
+        if (isSuccess) totalRev += o.harga;
+        if (d >= today) { tCount++; if (isSuccess) tRev += o.harga; }
+        if (d >= weekAgo) { wCount++; if (isSuccess) wRev += o.harga; }
+        if (d >= monthStart) { mCount++; if (isSuccess) mRev += o.harga; }
+      });
+
+      document.getElementById('statToday').textContent = tCount;
+      document.getElementById('statTodayRevenue').textContent = `RM${tRev.toFixed(2)} success`;
+      document.getElementById('statWeek').textContent = wCount;
+      document.getElementById('statWeekRevenue').textContent = `RM${wRev.toFixed(2)} success`;
+      document.getElementById('statMonth').textContent = mCount;
+      document.getElementById('statMonthRevenue').textContent = `RM${mRev.toFixed(2)} success`;
+      document.getElementById('statTotal').textContent = totalCount;
+      document.getElementById('statTotalRevenue').textContent = `RM${totalRev.toFixed(2)} success`;
+    }
+
+    function parseDate(str) {
+      if (!str) return null;
+      if (str instanceof Date) return str;
+      // Try parse from "DD/MM/YYYY, HH:MM:SS" or ISO
+      try {
+        const d = new Date(str);
+        if (!isNaN(d.getTime())) return d;
+      } catch(e){}
+      return null;
+    }
+
+    function populateProductFilter() {
+      const sel = document.getElementById('filterProduct');
+      const products = [...new Set(allOrders.map(o => o.produk).filter(Boolean))].sort();
+      const current = sel.value;
+      sel.innerHTML = '<option value="">Semua</option>' + products.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('');
+      sel.value = current;
+    }
+
+    // Filters
+    ['filterProduct', 'filterStatus', 'filterSearch'].forEach(id => {
+      document.getElementById(id).addEventListener('input', renderTable);
+    });
+
+    function renderTable() {
+      const prod = document.getElementById('filterProduct').value;
+      const stat = document.getElementById('filterStatus').value;
+      const q = document.getElementById('filterSearch').value.toLowerCase().trim();
+
+      const filtered = allOrders.filter(o => {
+        if (prod && o.produk !== prod) return false;
+        if (stat && (o.status || '').toLowerCase() !== stat.toLowerCase()) return false;
+        if (q) {
+          const hay = `${o.nama} ${o.email} ${o.telefon}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      document.getElementById('resultCount').textContent = `${filtered.length} order`;
+
+      const body = document.getElementById('ordersBody');
+      if (filtered.length === 0) {
+        body.innerHTML = '<tr><td colspan="9" class="empty">Tiada order ditemui.</td></tr>';
+        return;
+      }
+
+      body.innerHTML = filtered.map(o => {
+        const statusKey = (o.status || 'pending').toLowerCase();
+        let badgeClass = 'badge-pending';
+        if (statusKey === 'success') badgeClass = 'badge-success';
+        else if (statusKey === 'failed' || statusKey === 'fail') badgeClass = 'badge-fail';
+
+        const voucherHtml = o.voucher
+          ? `<span style="color:var(--green);">${escapeHtml(o.voucher)} (-RM${Number(o.diskaun || 0).toFixed(2)})</span>`
+          : '—';
+
+        return `<tr>
+          <td>${escapeHtml(formatDate(o.tarikh))}</td>
+          <td>${escapeHtml(o.nama || '')}</td>
+          <td><a href="https://wa.me/6${escapeHtml((o.telefon || '').replace(/\D/g,''))}" target="_blank" style="color:var(--brand-dark);">${escapeHtml(o.telefon || '')}</a></td>
+          <td>${escapeHtml(o.produk || '')}</td>
+          <td style="max-width:240px;white-space:normal;">${escapeHtml(o.pakej || '')}</td>
+          <td class="amount">RM${Number(o.harga || 0).toFixed(2)}</td>
+          <td>${voucherHtml}</td>
+          <td><span class="badge ${badgeClass}">${escapeHtml(o.status || 'Pending')}</span></td>
+          <td><code style="font-size:0.75rem;color:var(--muted);">${escapeHtml(o.billCode || '—')}</code></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function formatDate(s) {
+      const d = parseDate(s);
+      if (!d) return String(s || '');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yy = String(d.getFullYear()).slice(-2);
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mi = String(d.getMinutes()).padStart(2, '0');
+      return `${dd}/${mm}/${yy} ${hh}:${mi}`;
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+  </script>
+
+</body>
+</html>
