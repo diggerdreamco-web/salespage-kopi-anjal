@@ -37,7 +37,9 @@ export const PRODUCTS = {
   'lsum-pypt': {
     name: 'LSUM PYPT',
     packages: {
-      single: 'LSUM PYPT 80gm',
+      starter: 'LSUM PYPT 1 Pek (80gm)',
+      bestvalue: 'LSUM PYPT 2 Pek + FREE Ship',
+      hardcore: 'LSUM PYPT 3 Pek + FREE Ship',
     },
   },
   'minyak-sauna': {
