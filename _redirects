@@ -1,6 +1,0 @@
-# Sub-brand subdomain rewrites (Cloudflare Pages _redirects syntax)
-# 200 status = URL rewrite (URL kekal subdomain, content dari path lain)
-# Order matters — first match wins.
-
-# LSUM PYPT sub-brand: lsumpypt.teratakniaga.com/* → serve /lsum-pypt/*
-https://lsumpypt.teratakniaga.com/  /lsum-pypt/  200
