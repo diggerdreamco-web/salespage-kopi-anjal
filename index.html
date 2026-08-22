@@ -136,6 +136,34 @@
       </div>
 
       <div class="catalog-grid">
+
+        <!--
+          ═══════════════════════════════════════════════════════════════════
+          🏷️ SALE GUIDE — Cara buat sale untuk mana-mana produk (SEO-friendly)
+          ═══════════════════════════════════════════════════════════════════
+
+          Untuk produk yg on sale, buat 2 perubahan pada card produk tu:
+
+          (1) TAMBAH SALE BADGE atas gambar
+              Kat <div class="catalog-card-img">, tambah baris ni sebelum <img>:
+              <span class="shopee-badge" style="background:#c81c1c;">PROMO -25%</span>
+
+              (kalau card dah ada badge lain macam "Baru Mini 8gm", GANTIKAN dgn sale badge)
+
+          (2) TUKAR HARGA JADI STRIKETHROUGH + HARGA SALE
+              Cari <span class="catalog-price">RM65</span>, tukar jadi:
+              <span class="catalog-price">
+                <span style="text-decoration:line-through;color:#999;font-size:0.85em;">RM65</span>
+                RM50
+              </span>
+
+          Bila sale habis, revert je (buang badge, restore harga asal).
+          Push ke GitHub → Cloudflare auto deploy ~2 min.
+
+          Sale info dalam static HTML = Google baca terus = SEO best.
+          ═══════════════════════════════════════════════════════════════════
+        -->
+
         <!-- Anjal'e -->
         <a href="/anjal-e" data-product-id="anjal-e" class="catalog-card reveal">
           <div class="catalog-card-img">
@@ -333,45 +361,6 @@
       else nav.classList.remove('scrolled');
     });
 
-    // Sale overlay — fetch sale config from Apps Script, apply strikethrough + sale badge
-    // Sheet tab "Sale" columns: id | aktif (YES/NO) | harga_asal | harga_sale | badge
-    (async function applySalesOverlay() {
-      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw7Tnns4ClQVchc-UgQ6A2p-dnfdkNG61eYZ5r0G1TEG-IayM1qCv44qPqjHZdN4Pq1Zw/exec';
-      try {
-        const res = await fetch(APPS_SCRIPT_URL + '?type=sales', { cache: 'no-store' });
-        const data = await res.json();
-        if (data.status !== 'ok' || !Array.isArray(data.sales)) return;
-
-        data.sales.forEach(sale => {
-          if (!sale.aktif) return;
-          const card = document.querySelector(`[data-product-id="${sale.id}"]`);
-          if (!card) return;
-
-          const priceEl = card.querySelector('.catalog-price');
-          if (priceEl && sale.hargaSale) {
-            const asal = sale.hargaAsal || priceEl.textContent;
-            priceEl.innerHTML =
-              `<span style="text-decoration:line-through;color:#999;font-weight:400;font-size:0.85em;margin-right:6px;">${asal}</span>` +
-              `<span>${sale.hargaSale}</span>`;
-          }
-
-          if (sale.badge) {
-            const imgWrap = card.querySelector('.catalog-card-img');
-            if (imgWrap) {
-              const existing = imgWrap.querySelector('.shopee-badge');
-              if (existing) existing.remove();
-              const badge = document.createElement('span');
-              badge.className = 'shopee-badge';
-              badge.style.background = '#c81c1c';
-              badge.textContent = sale.badge;
-              imgWrap.insertBefore(badge, imgWrap.firstChild);
-            }
-          }
-        });
-      } catch (e) {
-        // Fail silently — static content stays
-      }
-    })();
   </script>
 </body>
 </html>
