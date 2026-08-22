@@ -137,7 +137,7 @@
 
       <div class="catalog-grid">
         <!-- Anjal'e -->
-        <a href="/anjal-e" class="catalog-card reveal">
+        <a href="/anjal-e" data-product-id="anjal-e" class="catalog-card reveal">
           <div class="catalog-card-img">
             <span class="shopee-badge">3 Pakej</span>
             <img src="/images/tripleproduct.png" alt="Anjal'e Kopi Kolagen — Pakej Produk" loading="lazy" decoding="async">
@@ -153,7 +153,7 @@
         </a>
 
         <!-- Kasturi Kijang -->
-        <a href="/kasturi-kijang" class="catalog-card reveal">
+        <a href="/kasturi-kijang" data-product-id="kasturi-kijang" class="catalog-card reveal">
           <div class="catalog-card-img">
             <img src="/images/kasturikijang.jpeg" alt="Wangian Kasturi Kijang" loading="lazy" decoding="async">
           </div>
@@ -168,7 +168,7 @@
         </a>
 
         <!-- Kapsul Abe Janji -->
-        <a href="/kapsul-abe-janji" class="catalog-card reveal">
+        <a href="/kapsul-abe-janji" data-product-id="kapsul-abe-janji" class="catalog-card reveal">
           <div class="catalog-card-img">
             <span class="shopee-badge">2 Saiz</span>
             <img src="/images/kapsulabejanji4biji.jpeg" alt="Kapsul Abe Janji" loading="lazy" decoding="async">
@@ -184,7 +184,7 @@
         </a>
 
         <!-- Kapsul KiManis -->
-        <a href="/kapsul-kimanis" class="catalog-card reveal">
+        <a href="/kapsul-kimanis" data-product-id="kapsul-kimanis" class="catalog-card reveal">
           <div class="catalog-card-img">
             <img src="/images/kapsulkimanis.jpeg" alt="Kapsul KiManis" loading="lazy" decoding="async">
           </div>
@@ -199,7 +199,7 @@
         </a>
 
         <!-- LSUM PYPT -->
-        <a href="/lsum-pypt" class="catalog-card reveal">
+        <a href="/lsum-pypt" data-product-id="lsum-pypt" class="catalog-card reveal">
           <div class="catalog-card-img">
             <span class="shopee-badge">Baru Mini 8gm</span>
             <img src="/images/LSUMPYPT.jpeg" alt="LSUM PYPT" loading="lazy" decoding="async">
@@ -215,7 +215,7 @@
         </a>
 
         <!-- Ubat Gatal -->
-        <a href="/ubat-gatal" class="catalog-card reveal">
+        <a href="/ubat-gatal" data-product-id="ubat-gatal" class="catalog-card reveal">
           <div class="catalog-card-img">
             <img src="/images/ubatgatal.jpeg" alt="Ubat Gatal Herba" loading="lazy" decoding="async">
           </div>
@@ -230,7 +230,7 @@
         </a>
 
         <!-- Sabun Kasturi Kijang -->
-        <a href="/sabun-kasturi-kijang" class="catalog-card reveal">
+        <a href="/sabun-kasturi-kijang" data-product-id="sabun-kasturi-kijang" class="catalog-card reveal">
           <div class="catalog-card-img">
             <img src="/images/sabunkasturikijang.jpeg" alt="Sabun Kasturi Kijang" loading="lazy" decoding="async">
           </div>
@@ -245,7 +245,7 @@
         </a>
 
         <!-- Minyak Urut -->
-        <a href="/minyak-urut" class="catalog-card reveal">
+        <a href="/minyak-urut" data-product-id="minyak-urut" class="catalog-card reveal">
           <div class="catalog-card-img">
             <img src="/images/minyakururt.jpeg" alt="Minyak Urut" loading="lazy" decoding="async">
           </div>
@@ -260,7 +260,7 @@
         </a>
 
         <!-- Minyak Terapi Saraf -->
-        <a href="/minyak-terapi-saraf" class="catalog-card reveal">
+        <a href="/minyak-terapi-saraf" data-product-id="minyak-terapi-saraf" class="catalog-card reveal">
           <div class="catalog-card-img">
             <img src="/images/minyakterapisaraf.jpeg" alt="Minyak Terapi Saraf" loading="lazy" decoding="async">
           </div>
@@ -275,7 +275,7 @@
         </a>
 
         <!-- Minyak Sauna -->
-        <a href="/minyak-sauna" class="catalog-card reveal">
+        <a href="/minyak-sauna" data-product-id="minyak-sauna" class="catalog-card reveal">
           <div class="catalog-card-img">
             <img src="/images/minyaksauna.jpeg" alt="Minyak Sauna" loading="lazy" decoding="async">
           </div>
@@ -332,6 +332,46 @@
       if (window.scrollY > 50) nav.classList.add('scrolled');
       else nav.classList.remove('scrolled');
     });
+
+    // Sale overlay — fetch sale config from Apps Script, apply strikethrough + sale badge
+    // Sheet tab "Sale" columns: id | aktif (YES/NO) | harga_asal | harga_sale | badge
+    (async function applySalesOverlay() {
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw7Tnns4ClQVchc-UgQ6A2p-dnfdkNG61eYZ5r0G1TEG-IayM1qCv44qPqjHZdN4Pq1Zw/exec';
+      try {
+        const res = await fetch(APPS_SCRIPT_URL + '?type=sales', { cache: 'no-store' });
+        const data = await res.json();
+        if (data.status !== 'ok' || !Array.isArray(data.sales)) return;
+
+        data.sales.forEach(sale => {
+          if (!sale.aktif) return;
+          const card = document.querySelector(`[data-product-id="${sale.id}"]`);
+          if (!card) return;
+
+          const priceEl = card.querySelector('.catalog-price');
+          if (priceEl && sale.hargaSale) {
+            const asal = sale.hargaAsal || priceEl.textContent;
+            priceEl.innerHTML =
+              `<span style="text-decoration:line-through;color:#999;font-weight:400;font-size:0.85em;margin-right:6px;">${asal}</span>` +
+              `<span>${sale.hargaSale}</span>`;
+          }
+
+          if (sale.badge) {
+            const imgWrap = card.querySelector('.catalog-card-img');
+            if (imgWrap) {
+              const existing = imgWrap.querySelector('.shopee-badge');
+              if (existing) existing.remove();
+              const badge = document.createElement('span');
+              badge.className = 'shopee-badge';
+              badge.style.background = '#c81c1c';
+              badge.textContent = sale.badge;
+              imgWrap.insertBefore(badge, imgWrap.firstChild);
+            }
+          }
+        });
+      } catch (e) {
+        // Fail silently — static content stays
+      }
+    })();
   </script>
 </body>
 </html>

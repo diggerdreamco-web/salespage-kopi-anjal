@@ -46,10 +46,41 @@ function getSheetId() {
   return PropertiesService.getScriptProperties().getProperty('SHEET_ID');
 }
 
-// GET — return orders untuk dashboard
-// URL: <apps-script-url>?secret=YOUR_SECRET
+// GET — return orders (dashboard) OR sale config (public, no auth)
+// URL:
+//   Orders:      <apps-script-url>?secret=YOUR_SECRET
+//   Sale config: <apps-script-url>?type=sales
 function doGet(e) {
   try {
+    // === Public endpoint: sale config ===
+    // Tab "Sale" dalam Sheet, headers: id | aktif | harga_asal | harga_sale | badge
+    if (e.parameter.type === 'sales') {
+      var ssSale = SpreadsheetApp.openById(getSheetId());
+      var saleSheet = ssSale.getSheetByName('Sale');
+      if (!saleSheet) {
+        return ContentService
+          .createTextOutput(JSON.stringify({ status: 'ok', sales: [] }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+      var saleValues = saleSheet.getDataRange().getValues();
+      var sales = [];
+      for (var s = 1; s < saleValues.length; s++) {
+        var srow = saleValues[s];
+        if (!srow[0]) continue;
+        sales.push({
+          id: String(srow[0]).trim(),
+          aktif: String(srow[1]).trim().toUpperCase() === 'YES',
+          hargaAsal: String(srow[2] || '').trim(),
+          hargaSale: String(srow[3] || '').trim(),
+          badge: String(srow[4] || '').trim()
+        });
+      }
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'ok', sales: sales }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // === Admin endpoint: orders (requires secret) ===
     var secret = e.parameter.secret;
     var adminSecret = getAdminSecret();
     if (!adminSecret) {
