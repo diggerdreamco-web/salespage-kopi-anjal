@@ -79,6 +79,20 @@
 
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/catalog.css">
+  <style>
+    /* Shopee-style card tweaks */
+    .catalog-card-img { position: relative; }
+    .shopee-badge {
+      position: absolute; top: 10px; left: 10px; z-index: 2;
+      background: #ee4d2d; color: #fff;
+      padding: 3px 10px; border-radius: 4px 4px 4px 0;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .catalog-card .catalog-price {
+      color: #ee4d2d; font-weight: 700; font-size: 1.1rem;
+    }
+  </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -125,15 +139,15 @@
         <!-- Anjal'e -->
         <a href="/anjal-e" class="catalog-card reveal">
           <div class="catalog-card-img">
+            <span class="shopee-badge">3 Pakej</span>
             <img src="/images/tripleproduct.png" alt="Anjal'e Kopi Kolagen — Pakej Produk" loading="lazy" decoding="async">
           </div>
           <div class="catalog-card-body">
             <span class="catalog-card-tag">Kopi Kesihatan</span>
             <h3>Anjal'e</h3>
-            <p>Minuman kopi dengan kolagen, Pueraria Mirifica & antioksidan. Untuk kulit anjal, awet muda dari dalam.</p>
             <div class="catalog-card-meta">
               <span class="catalog-price">Dari RM65</span>
-              <span class="catalog-cta">Lihat Detail →</span>
+              <span class="catalog-cta">Beli →</span>
             </div>
           </div>
         </a>
@@ -146,10 +160,9 @@
           <div class="catalog-card-body">
             <span class="catalog-card-tag">Wangian Sunnah</span>
             <h3>Kasturi Kijang</h3>
-            <p>Pati minyak wangi 10ml — tanpa alkohol, mesra solat, tahan sepanjang hari.</p>
             <div class="catalog-card-meta">
               <span class="catalog-price">RM80</span>
-              <span class="catalog-cta">Lihat Detail →</span>
+              <span class="catalog-cta">Beli →</span>
             </div>
           </div>
         </a>
@@ -157,15 +170,15 @@
         <!-- Kapsul Abe Janji -->
         <a href="/kapsul-abe-janji" class="catalog-card reveal">
           <div class="catalog-card-img">
+            <span class="shopee-badge">2 Saiz</span>
             <img src="/images/kapsulabejanji4biji.jpeg" alt="Kapsul Abe Janji" loading="lazy" decoding="async">
           </div>
           <div class="catalog-card-body">
             <span class="catalog-card-tag">Supplement Lelaki</span>
             <h3>Kapsul Abe Janji</h3>
-            <p>Premium natural energy booster dari kombinasi herba 100%. Untuk tenaga lelaki semula jadi.</p>
             <div class="catalog-card-meta">
               <span class="catalog-price">Dari RM30</span>
-              <span class="catalog-cta">Lihat Detail →</span>
+              <span class="catalog-cta">Beli →</span>
             </div>
           </div>
         </a>
@@ -178,10 +191,9 @@
           <div class="catalog-card-body">
             <span class="catalog-card-tag">Suplemen Kesihatan</span>
             <h3>Kapsul KiManis</h3>
-            <p>Suplemen herba 100% untuk bantu kawal paras gula dalam darah. Ambil 2 biji selepas makan malam.</p>
             <div class="catalog-card-meta">
               <span class="catalog-price">RM70</span>
-              <span class="catalog-cta">Lihat Detail →</span>
+              <span class="catalog-cta">Beli →</span>
             </div>
           </div>
         </a>
@@ -189,15 +201,15 @@
         <!-- LSUM PYPT -->
         <a href="/lsum-pypt" class="catalog-card reveal">
           <div class="catalog-card-img">
+            <span class="shopee-badge">Baru Mini 8gm</span>
             <img src="/images/LSUMPYPT.jpeg" alt="LSUM PYPT" loading="lazy" decoding="async">
           </div>
           <div class="catalog-card-body">
             <span class="catalog-card-tag">Penjagaan Wanita</span>
             <h3>LSUM PYPT</h3>
-            <p>Penjagaan intim — kelembapan, keanjalan, atasi keputihan dan jangkitan kulat.</p>
             <div class="catalog-card-meta">
-              <span class="catalog-price">RM65</span>
-              <span class="catalog-cta">Lihat Detail →</span>
+              <span class="catalog-price">Dari RM20</span>
+              <span class="catalog-cta">Beli →</span>
             </div>
           </div>
         </a>
@@ -210,10 +222,9 @@
           <div class="catalog-card-body">
             <span class="catalog-card-tag">Rawatan Kulit</span>
             <h3>Ubat Gatal</h3>
-            <p>Lega ekzema, kurap, panau, gigitan serangga. Bahan: Manjakani, Aloe Vera, Bidara, Pegaga.</p>
             <div class="catalog-card-meta">
               <span class="catalog-price">RM30</span>
-              <span class="catalog-cta">Lihat Detail →</span>
+              <span class="catalog-cta">Beli →</span>
             </div>
           </div>
         </a>
@@ -226,10 +237,9 @@
           <div class="catalog-card-body">
             <span class="catalog-card-tag">Sabun Aromaterapi</span>
             <h3>Sabun Kasturi Kijang</h3>
-            <p>Sabun premium homemade dgn pati kasturi asli. Aromaterapi + ikhtiar syifa.</p>
             <div class="catalog-card-meta">
               <span class="catalog-price">RM25</span>
-              <span class="catalog-cta">Lihat Detail →</span>
+              <span class="catalog-cta">Beli →</span>
             </div>
           </div>
         </a>
@@ -242,10 +252,9 @@
           <div class="catalog-card-body">
             <span class="catalog-card-tag">Minyak Tradisional</span>
             <h3>Minyak Urut</h3>
-            <p>Lega lenguh badan, sakit otot, sendi, dan membuang angin. Herba tradisional.</p>
             <div class="catalog-card-meta">
               <span class="catalog-price">RM30</span>
-              <span class="catalog-cta">Lihat Detail →</span>
+              <span class="catalog-cta">Beli →</span>
             </div>
           </div>
         </a>
@@ -258,10 +267,9 @@
           <div class="catalog-card-body">
             <span class="catalog-card-tag">Minyak Tradisional</span>
             <h3>Minyak Terapi Saraf</h3>
-            <p>Lega kebas kaki tangan, lenguh sendi, kejang otot, dan lancarkan peredaran darah.</p>
             <div class="catalog-card-meta">
               <span class="catalog-price">RM30</span>
-              <span class="catalog-cta">Lihat Detail →</span>
+              <span class="catalog-cta">Beli →</span>
             </div>
           </div>
         </a>
@@ -274,10 +282,9 @@
           <div class="catalog-card-body">
             <span class="catalog-card-tag">Aromaterapi</span>
             <h3>Minyak Sauna</h3>
-            <p>Untuk rawatan sauna — aromaterapi, lancarkan pernafasan, dan kesegaran badan.</p>
             <div class="catalog-card-meta">
               <span class="catalog-price">RM30</span>
-              <span class="catalog-cta">Lihat Detail →</span>
+              <span class="catalog-cta">Beli →</span>
             </div>
           </div>
         </a>
